@@ -1,0 +1,45 @@
+#MainWidget:
+BoxLayoutExample:      
+
+
+<MainWidget>:
+    
+    Button:
+        text: "Hello"
+        size: "100dp","80dp"
+        pos: "100dp", "200dp" 
+        color: 0, 0, 1, 1
+    Label:
+        text: "Hello2"
+        size: "100dp","80dp"
+        pos: "200dp", "300dp" 
+        color: 1, 0, 0, 1
+
+
+
+#BoxLayout definito nel kv file invece che con codice python
+<BoxLayoutExample>:
+    orientation: "horizontal"
+    Button :
+        text: "A"
+        size_hint: None, None  #.8, .5
+        #size: "40dp","40dp" #non funziona perché non è un widget, per farlo funzionare serve size_hint
+        width: "100dp"
+        height: "40dp"
+        #pos_hint: {"right":.5} #{"x":.1 }
+        pos_hint: {"center_y":.5}
+#    Button:
+#        text: "B"
+    BoxLayout:
+        orientation: "vertical"
+        Button:
+            text: "B1"
+        Button:
+            text: "B2"
+        Button:
+            text: "B3"
+        Button:
+            text: "B4"    
+    Button:
+        text: "C"
+
