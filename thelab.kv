@@ -1,5 +1,7 @@
-#MainWidget:
-BoxLayoutExample:      
+#MainWidget:  #per richiamare il codice di <MainWidget>
+#BoxLayoutExample:  #per richiamare il codice di <BoxLayoutExample>
+AnchorLayoutExample:  #per richiamare il codice di <AnchorLayoutExample>
+
 
 
 <MainWidget>:
@@ -32,6 +34,7 @@ BoxLayoutExample:
 #        text: "B"
     BoxLayout:
         orientation: "vertical"
+        spacing: "10dp"
         Button:
             text: "B1"
         Button:
@@ -42,4 +45,18 @@ BoxLayoutExample:
             text: "B4"    
     Button:
         text: "C"
+
+
+<AnchorLayoutExample>:
+    anchor_x: "right"  # possibili valori right, left, center
+    #anchor_y: "center"  # possibili valori bottom, top, center
+    Button:
+        text: "A"
+        size_hint: .2, .2
+    Button:
+        text: "B"
+        size_hint: .1, .1
+    Button:
+        text: "C"
+        size_hint: .1, .1    
 
