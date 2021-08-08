@@ -1,6 +1,7 @@
 #MainWidget:  #per richiamare il codice di <MainWidget>
 #BoxLayoutExample:  #per richiamare il codice di <BoxLayoutExample>
-AnchorLayoutExample:  #per richiamare il codice di <AnchorLayoutExample>
+#AnchorLayoutExample:  #per richiamare il codice di <AnchorLayoutExample>
+GridLayoutExample:  #per richiamare il codice di <GridLayoutExample>
 
 
 
@@ -48,15 +49,32 @@ AnchorLayoutExample:  #per richiamare il codice di <AnchorLayoutExample>
 
 
 <AnchorLayoutExample>:
-    anchor_x: "right"  # possibili valori right, left, center
-    #anchor_y: "center"  # possibili valori bottom, top, center
+    anchor_x: "center"  # possibili valori right, left, center
+    anchor_y: "top"  # possibili valori bottom, top, center
+    BoxLayout:
+        size_hint: .2, .2
+        Button:
+            text: "A"
+            #size_hint: .2, .2
+        Button:
+            text: "B"
+            #size_hint: .1, .1
+
+
+#<GridLayoutExample@GridLayout>:
+<GridLayoutExample>:
+    #rows
+    #rows: 
+    #columns
+    cols:2
+
     Button:
         text: "A"
-        size_hint: .2, .2
+        size_hint: .5,1
+    BoxLayoutExample:
     Button:
         text: "B"
-        size_hint: .1, .1
+        
     Button:
         text: "C"
-        size_hint: .1, .1    
-
+        size_hint: .5,1

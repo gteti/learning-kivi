@@ -62,4 +62,44 @@ L'ancoraggio degli oggetti grafici, se non definito, è pari a _center_ e _cente
     anchor_y: "center" # possibili valori bottom, top, center
 ```
 
+## GridLayout
+Ora verrà valutato il **GridLayout**.  
+Sarà necessario creare la classe, ovviamente nel main.py ed il relativo layout nel file thelab.kv.
+
+Se si volesse commentare la definizione nel _main.py_ della classe _GridLayoutExample_ (serve solo a definire il tipo di tale oggetto), è possibile commentare tale codice ed implementare la tipologia del LayoutExample direttamente nel file _thelab.kv_ :
+```python
+    <GridLayoutExample@GridLayout>:
+```
+
+Questo stesso processo può essere utilizzato anche per il _BoxLayout_ e _AnchorLayout_ definiti in precedenza.
+
+Il _GridLayout_ ha bisogno anche del numero di righe e colonne. Gli oggetti creati in questo Layout andranno a riempire i riquadri che si formano intersecando le righe e le colonne:
+```python
+    rows: 2
+    cols: 2
+```
+
+Potremo usare il _size\_hint_ per il singolo elemento della riga, rispettivamente colonna, solo se tutti gli elementi avranno la stessa definizione per riga, rispettivamente colonna. Potremo usare anche la definizione della dimensione precisa per _width_ o _height_ andando a definire il numero preciso di pixel per gli elementi presenti sulla riga, rispettivamente colonna, di interesse.
+
+Sarà anche possibile richiamare uno dei layout creati in precedenza, semplicemente richiamandone il nome
+
+```python
+ <GridLayoutExample>:
+    cols:2
+    Button:
+        text: "A"
+        size_hint: .5,1
+    BoxLayoutExample:
+    Button:
+        text: "B"
+        size_hint: .5,1
+```
+
+## StackLayout
+(min 50:22)
+
+
+
+
+
 
