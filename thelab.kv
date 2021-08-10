@@ -1,7 +1,9 @@
 #MainWidget:  #per richiamare il codice di <MainWidget>
 #BoxLayoutExample:  #per richiamare il codice di <BoxLayoutExample>
 #AnchorLayoutExample:  #per richiamare il codice di <AnchorLayoutExample>
-GridLayoutExample:  #per richiamare il codice di <GridLayoutExample>
+#GridLayoutExample:  #per richiamare il codice di <GridLayoutExample>
+#StackLayoutExample:  #per richiamare il codice di <StackLayoutExample>
+ScrollViewLayoutExample:  #per richiamare il codice di <ScrollLayoutExample>
 
 
 
@@ -78,3 +80,39 @@ GridLayoutExample:  #per richiamare il codice di <GridLayoutExample>
     Button:
         text: "C"
         size_hint: .5,1
+
+<StackLayoutExample>:
+    #padding L T R B
+    #padding:("20dp","30dp","40dp","50dp")
+    #left-right #top-botom default
+    #orientation: "rl-tb"
+    
+    #Spacing orizontally and vertically
+    #spacing: "10dp", "10dp" 
+
+    Button:
+        text: "A"
+        size_hint: .2, .2
+    
+    Button:
+        text: "B"
+        size_hint: .2, .2
+    Button:
+        text: "C"
+        size_hint: .2, .2
+    Button:
+        text: "D"
+        size_hint: .2, .2
+    Button:
+        text: "E"
+        size_hint: .2, .2
+    Button:
+        text: "F"
+        size_hint: .2, .2
+
+
+
+<ScrollViewLayoutExample@ScrollView>:
+    StackLayoutExample:
+        size_hint: 1, None #orizontally and vertically
+        height: self.minimum_height

@@ -98,6 +98,61 @@ Sarà anche possibile richiamare uno dei layout creati in precedenza, sempliceme
 ## StackLayout
 (min 50:22)
 
+Per questo layout avremo bisogno sia del codice python che della definizione degli oggetti nel _thelab.kv_ poiché sarà necessario per definire delle funzionalità aggiuntive.
+Lo _StackLayout_ inserirà gli oggetti "interamente" e quindi bisogna definire, per ognuno, la sua dimensione. 
+
+Definiamo quindi la forma standard del costruttore nel codice python:
+```python
+    class StackLayoutExample(StackLayout):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            #Per esempio aggiungiamo un pulsante
+            b = Button(text="Z",size_hint=(.2,.2))
+            self.add_widget(b)
+```
+Questo nuovo pulsante _Z_ verrà inserito per prima degli ulteriori 6 pulsanti questo perché il costruttore, la funzione __init__ viene eseguita prima dell'interpretazione del _*.kv_ file. 
+
+Creando dei bottoni a runtime è possibile definire la loro dimensione tramite _size\_hint_ in % dell'intera dimensione della finestra. Quando questa verrà ridimensionata a runtime, i pulsanti stessi si rimpiccioliranno di conseguenza.
+Se invece definiamo la dimensione come _size_ dopo aver aggiunto l'importazione dalle metriche di **dp** allora possiamo instaziare a runtime i pulsanti come:
+```python
+b = Button(text=str(i+1),size_hint=(None,None), size=(dp(100),dp(100))) 
+```
+Con l'uso della dimensione in _dp_ quando la dimensione della finestra cambierà, non cambieranno di conseguenza le dimensione dei pulsanti, ma a scaglioni verranno spostati su righe successive. La dimensione dei pulsanti è quindi fissa e la loro generazione avviene da sinistra verso destra e dall'alto verso il basso. Quest'ultima parte definisce l'**orientazione** che è diversa a quanto visto in precedenza. 
+```python
+<StackLayoutExample>:   
+    orientation: "lr-tb" #left to right and top to bottom
+```
+Possiamo utilizzare l'orientamento anche direttamente dal codice python:
+```python
+self.orientation="lr-tb"
+```
+
+E' possibile inoltre definire un **padding** e **spacing** 
+```python
+<StackLayoutExample>:
+    #padding Left Top Right Bottom
+    padding:("20dp","30dp","40dp","50dp") 
+    #Spacing orizontally and vertically
+    spacing: "20dp", "20dp"
+```
+
+## Scrollview
+Se gli elementi nella finestra sono tanti, può essere necessario o ridimensionare la finestra(a volta non è sufficiente) oppure utilizzare il layout **Scrollview**. 
+ScrollView può prendere un solo figlio:
+```python
+<ScrollViewExample@ScrollView>:
+    StackLayoutExample:
+```
+
+
+
+
+
+
+
+
+
+
 
 
 
