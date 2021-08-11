@@ -3,7 +3,9 @@
 #AnchorLayoutExample:  #per richiamare il codice di <AnchorLayoutExample>
 #GridLayoutExample:  #per richiamare il codice di <GridLayoutExample>
 #StackLayoutExample:  #per richiamare il codice di <StackLayoutExample>
-ScrollViewLayoutExample:  #per richiamare il codice di <ScrollLayoutExample>
+#ScrollViewLayoutExample:  #per richiamare il codice di <ScrollLayoutExample>
+#PageLayoutExample:  #per richiamare il codice di <PageLayoutExample>
+WidgetsExample:  #per richiamare il codice di <WidgetsExample>
 
 
 
@@ -116,3 +118,32 @@ ScrollViewLayoutExample:  #per richiamare il codice di <ScrollLayoutExample>
     StackLayoutExample:
         size_hint: 1, None #orizontally and vertically
         height: self.minimum_height
+
+
+
+<PageLayoutExample@PageLayout>:
+    MainWidget:
+    BoxLayoutExample:
+    AnchorLayoutExample:
+    GridLayoutExample:
+
+
+#Widgets part starts here
+
+<WidgetsExample>:
+    cols: 3
+    ToggleButton:
+        text: "OFF"
+        on_state: root.on_toggle_button_state(self)
+        size_hint: None, 1
+        width: "100dp"
+    Button:
+        text: "click here"
+        on_press: root.on_button_click()
+    Label:
+        text: root.my_text
+        font_name: "RESOURCES_KIVY/1_THE_LAB/RESOURCES/fonts/Lcd.ttf"
+        font_size: "40dp"
+        color: 1, .5, 1, 1
+
+

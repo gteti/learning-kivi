@@ -2,7 +2,7 @@
 
 # Learning kivy
 
-Studio della librearia Python **kivi** tramite video di freecodecamp: https://youtu.be/l8Imtec4ReQ?t=3445
+Studio della librearia Python **kivi** tramite video di freecodecamp: https://youtu.be/l8Imtec4ReQ
 
 Sarà necessario installare la libreria kivi tramite la console e se si usa **vscode** vi sarà anche la possibilità di aggiungere la libreria **Kivy** che ci aiuterà nel riconoscimento degli oggetti grafici inseriti.
 
@@ -143,18 +143,85 @@ ScrollView può prendere un solo figlio:
 <ScrollViewExample@ScrollView>:
     StackLayoutExample:
 ```
+Occore quindi definire la dimensione del layout chiaramente e la tipologia di scroll se verticale o orizzontale.
+
+
+## PageLayout
+
+Questo layout permette di unire layout diversi. Proviamo a visualizzare alcuni layout già creati direttamente dal _thelab.kv_ file:
+```python
+<PageLayoutExample@PageLayout>:
+    MainWidget:
+    BoxLayoutExample:
+    AnchorLayoutExample:
+    GridLayoutExample:
+```
+
+Potremo vedere come la visualizzazione è anomala. I layout vengono creati in sequenza e si trovano tutti a destra del primo layout, il _MainWidget_. Per poter visualizzare gli altri layout dovremo trascinarli da destra verso sinistra e questi nuovi layout andranno a sovrapporsi man mano ai precedenti creando appunto un rendering non proprio bello. Vedremo meglio come sistemare il tutto nel **CanvasLayout**.
 
 
 
+# Widgets section
+
+Passiamo ora alla sezione widget dove vedremo i **Toogle button**, **Switch**, **Sliders**, **Progress Bar** e anche **Text input** e infine come visualizzare le immagini e controllarne la visualizzazione.
+
+## Button click
+Vediamo come gestire il click di un pulsante. Useremo il **on_press**: Qui passeremo la funzione da eseguire quando viene premuto il pulsante. Il codice python relativo a questa funzione è nel main.py
+
+```python
+thelab.kv
+<WidgetsExample>:
+    cols: 3
+    Button:
+        text: "click here"
+        on_press: root.on_button_click()
+    Label:
+        text: "hello"
+
+main.py
+class WidgetsExample(GridLayout):
+    def on_button_click(self):
+        print("Button clicked")
+```
+
+La funzione richiamata nel _.kv_ file necessata della definizione **root** e non **self** poiché altrimenti farebbe riferimento al _Button_ e non al _WidgetsExample_.
 
 
+## Custom Font
+Utilizzeremo il font **Lcd.ttf** indicato nelle _Resources_ del progetto.
+```python
+Label:
+   text: root.my_text
+   font_name: "RESOURCES_KIVY/1_THE_LAB/RESOURCES/fonts/Lcd.ttf"
+   font_size: "40dp"
+   color: 1, .5, 1, 1
+```
 
+## Toggle Button
+Per utilizzare un ToggleButton dobbiamo 
+```python
+thelab.kv
+<WidgetsExample>:
+    cols: 3
+    ToggleButton:
+        text: "Toggle"
+        on_state: root.on_toggle_button_state(self)
+        size_hint: None, 1
+        width: "100dp"
 
+main.py
+def on_toggle_button_state(self, widget):
+    print("toggle state "+widget.state)
+    if widget.state == "normal":
+        #OFF
+        widget.text = "OFF"
+        self.cEnable = False
+    else:
+        #ON
+        widget.text = "ON"
+        self.cEnable = True
+```
+Richiameremo una nuova funzione con il pulsante toggle che riceverà il toggle widget stesso. In funzione dello stato di quest'ultimo potremo abilitare o meno l'incremento del contatore.
 
-
-
-
-
-
-
-
+## Disabled Button
+https://youtu.be/l8Imtec4ReQ?t=5144

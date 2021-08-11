@@ -7,6 +7,35 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.stacklayout import StackLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.metrics import dp
+from kivy.properties import StringProperty
+
+class WidgetsExample(GridLayout):
+    my_text = StringProperty("") #"Hello!") #Default value
+    i = 0
+    cEnable = False
+    def on_button_click(self):
+        print("Button clicked "+str(self.i)+" times")
+        if (self.i==0 and self.cEnable):
+            self.my_text = "Hello!"
+            self.i = self.i +1
+        elif (self.i == 1 and self.cEnable):
+            self.my_text = "Button clicked "+str(self.i)+" times"
+            self.i = self.i +1
+        elif (self.i == 2 and self.cEnable):
+            self.my_text = "Button clicked "+str(self.i)+" times"
+            self.i = 0
+    
+    def on_toggle_button_state(self, widget):
+        print("toggle state "+widget.state)
+        if widget.state == "normal":
+            #OFF
+            widget.text = "OFF"
+            self.cEnable = False
+        else:
+            #ON
+            widget.text = "ON"
+            self.cEnable = True
+
 
 #class ScrollViewLayoutExample(ScrollView):
 #    pass
