@@ -224,4 +224,101 @@ def on_toggle_button_state(self, widget):
 Richiameremo una nuova funzione con il pulsante toggle che riceverà il toggle widget stesso. In funzione dello stato di quest'ultimo potremo abilitare o meno l'incremento del contatore.
 
 ## Disabled Button
-https://youtu.be/l8Imtec4ReQ?t=5144
+Quando abbiamo disabilitato l'incremento (Toggle Button) rimane ancora possibile premere il pulsante per incrementare il conteggio. Ovviamente il numero non cambia, la funzione non viene eseguita, ma l'animazione del pulsante è ancora attiva.
+
+Per fare questo useremo la proprietà del pulsante **disabled** e trasfromeremo la variabile enable in una **Proprietà booleana** della classe. Il resto del codice rimarrà invariato.
+
+```python
+thelab.kv
+...
+Button:
+    text: "click here"
+    on_press: root.on_button_click()
+    disabled: not(root.cEnable)
+...
+
+main.py
+...
+   cEnable = BooleanProperty(False) 
+...
+```
+
+
+## Switch
+Oggetto grafico semplicemente instanziato e collegato ad una funzione utilizzando la proprietà **on_active**
+```python
+thelab.pv
+Switch:
+    size_hint: None, 1
+    width: "100dp"
+    on_active: root.on_switch_active(self)
+
+main.py
+def on_switch_active(self, widget):
+    print("Switch"+ str(widget.active))
+```
+
+
+## Slider
+Il valore dello **Slider** è compreso fra 0 e 100.
+Utilizzando una funzione per visualizzare il valore dello slider ci rendiamo conto che è un _float_ che dovremo convertire, magari in INT a seconda della necessità.
+
+Per visualizzare il valore dello slider all'interno di una label modifichiamo il codice :
+```python
+thelab.pv
+Slider:
+    min: 0
+    max: 100
+    #value :
+    orientation: "vertical"
+    on_value: root.on_slider_value(self)
+
+main.py
+def on_slider_value(self, widget):
+        #print("Slider:"+str(int(widget.value)))
+        self.my_slider_text = str(int(widget.value))
+
+```
+
+E' possibile utilizzare una specie di variabile all'interno del _.kv_ file. Ossia definire un **id** per l'oggetto grafico e richiamarlo per ottenere il valore :
+```python
+thelab.pv
+Slider:
+        id: my_slider
+        min: 0
+        max: 100
+        #value :
+        orientation: "vertical"
+        on_value: root.on_slider_value(self)
+    Label:
+        text: str(my_slider.value) #root.my_slider_text
+        font_name: "RESOURCES_KIVY/1_THE_LAB/RESOURCES/fonts/Lcd.ttf"
+        font_size: "30dp"
+        color: 0, .5, 1, 1
+
+```
+Il comportamento è il medesimo che se definissimo una proprietà all'interno della classe, nel _main.py_ che contenga il valore dello slider assegnato alla label.
+
+
+## Progress Bar
+
+Useremo la **Progress Bar** e la collegheremo allo slider. Il _max_ sarà 100 ed il _min_ invece 0: è sempre 0 e non è modificabile.
+Spostiamo la Label all'interno di un _BoxLayout_ :
+```python
+thelab.pv
+BoxLayout:
+    orientation: "vertical"
+    Label:
+        text: str(int(my_slider.value)) #rootmy_slider_text
+        font_name: "RESOURCES_KIVY/1_THE_LABRESOURCES/fonts/Lcd.ttf"
+        font_size: "30dp"
+        color: 0, .5, 1, 1
+    ProgressBar:
+        max: 100
+        #min: 0 è sempre 0 e non è indicabile
+        value: my_slider.value
+```
+
+## TextInput
+https://youtu.be/l8Imtec4ReQ?t=5949
+

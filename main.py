@@ -7,12 +7,13 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.stacklayout import StackLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.metrics import dp
-from kivy.properties import StringProperty
+from kivy.properties import BooleanProperty, StringProperty
 
 class WidgetsExample(GridLayout):
     my_text = StringProperty("") #"Hello!") #Default value
+    my_slider_text = StringProperty("") 
     i = 0
-    cEnable = False
+    cEnable = BooleanProperty(False)
     def on_button_click(self):
         print("Button clicked "+str(self.i)+" times")
         if (self.i==0 and self.cEnable):
@@ -36,6 +37,12 @@ class WidgetsExample(GridLayout):
             widget.text = "ON"
             self.cEnable = True
 
+    def on_switch_active(self, widget):
+        print("Switch"+ str(widget.active))
+
+    def on_slider_value(self, widget):
+        #print("Slider:"+str(int(widget.value)))
+        self.my_slider_text = str(int(widget.value))
 
 #class ScrollViewLayoutExample(ScrollView):
 #    pass

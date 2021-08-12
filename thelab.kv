@@ -140,10 +140,35 @@ WidgetsExample:  #per richiamare il codice di <WidgetsExample>
     Button:
         text: "click here"
         on_press: root.on_button_click()
+        disabled: not(root.cEnable)
     Label:
         text: root.my_text
         font_name: "RESOURCES_KIVY/1_THE_LAB/RESOURCES/fonts/Lcd.ttf"
         font_size: "40dp"
         color: 1, .5, 1, 1
-
+    Switch:
+        id: my_switch
+        size_hint: None, 1
+        width: "100dp"
+        active: False
+        on_active: root.on_switch_active(self)
+    Slider:
+        id: my_slider
+        min: 0
+        max: 100
+        #value :
+        orientation: "vertical"
+        #on_value: root.on_slider_value(self)
+        disabled: not my_switch.active
+    BoxLayout:
+        orientation: "vertical"
+        Label:
+            text: str(int(my_slider.value)) #root.my_slider_text
+            font_name: "RESOURCES_KIVY/1_THE_LAB/RESOURCES/fonts/Lcd.ttf"
+            font_size: "30dp"
+            color: 0, .5, 1, 1
+        ProgressBar:
+            max: 100
+            #min: 0 è sempre 0 e non è indicabile
+            value: my_slider.value
 
