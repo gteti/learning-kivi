@@ -5,7 +5,8 @@
 #StackLayoutExample:  #per richiamare il codice di <StackLayoutExample>
 #ScrollViewLayoutExample:  #per richiamare il codice di <ScrollLayoutExample>
 #PageLayoutExample:  #per richiamare il codice di <PageLayoutExample>
-WidgetsExample:  #per richiamare il codice di <WidgetsExample>
+#WidgetsExample:  #per richiamare il codice di <WidgetsExample>
+ImagesExample:  #per richiamare il codice di <ImagesExample>
 
 
 
@@ -171,4 +172,27 @@ WidgetsExample:  #per richiamare il codice di <WidgetsExample>
             max: 100
             #min: 0 è sempre 0 e non è indicabile
             value: my_slider.value
+    TextInput:
+        id: my_textinput
+        size_hint: None, 1 #Gestiamo la lunghezza da width
+        width: "100dp"
+        text: "Foo" #default text
+        multiline: False
+        on_text_validate: root.on_text_validate(self)
+    Label: 
+        text: "Your name is: "+root.text_input_str #my_textinput.text
+
+<ImagesExample@GridLayout>:
+    cols: 3
+    Image: 
+        source: "RESOURCES_KIVY/1_THE_LAB/RESOURCES/images/cake.jpg"
+    Image: 
+        source: "RESOURCES_KIVY/1_THE_LAB/RESOURCES/images/cake.jpg"
+        allow_stretch: True
+    Image: 
+        source: "RESOURCES_KIVY/1_THE_LAB/RESOURCES/images/cake.jpg"
+        allow_stretch: True
+        keep_ratio: False
+
+
 

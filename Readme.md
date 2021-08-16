@@ -322,3 +322,83 @@ BoxLayout:
 ## TextInput
 https://youtu.be/l8Imtec4ReQ?t=5949
 
+Aggiungiamo ora un TextInput per gestire l'Input di un utente. Per avere del testo di default nel riquadro, usiamo il parametro **text**. Il contenuto inserito è di solito su multilinea, quindi occorre operare sulla propietà **multiline**. Così facendo però, quando premiamo _Invio_ la _TextInput_ abbiamo un comportamento non sempre giusto: si può fare di meglio.
+
+```python
+thelab.pv
+TextInput:
+    id: my_textinput
+        size_hint: None, 1 #Gestiamo la lunghezza da width
+        width: "100dp"
+        text: "Foo" #default text
+        multiline: False
+Label: 
+    text: my_textinput.text
+
+```
+
+Per operare meglio in questa condizione utilizzeremo **on_text_validate** che chiamerà una nuova funzione, propriamente definita.
+```python
+thelab.pv
+TextInput:
+    id: my_textinput
+        size_hint: None, 1 #Gestiamo la lunghezza da width
+        width: "100dp"
+        text: "Foo" #default text
+        multiline: False
+        on_text_validate: root.on_text_validate(self)
+Label: 
+    text: root.text_input_str        
+
+```
+
+
+## Images
+
+Vediamo ora come aggiungere le immagini in un progetto.
+Partiremo da un interfaccia grafica pulita per questa parte. 
+
+```python
+<ImagesExample@GridLayout>:
+    cols: 3
+    Image: 
+        source: "RESOURCES_KIVY/1_THE_LAB/RESOURCES/images/cake.jpg"
+
+```
+
+L'aspetto dell'immagine aggiunta è preservato quando si ridimensiona la finestra, il cosìddetto **ratio**. Quando riallarghiamo la pagina, le dimensioni dell'immagine arriveranno al massimo ai suoi attributi originali. La parte di finestra ulteriore sarà nera.
+Per poter consentire ad un immagine di occupare una parte di finestra maggiore delle sue dimensioni originali, occorre utilizzare la proprietà **allow_stretch**.
+
+```python
+Image: 
+    source: "RESOURCES_KIVY/1_THE_LAB/RESOURCES/images/cake.jpg"
+    allow_stretch: True
+```
+
+Per far riempire l'intero spazio bisogna combinare *allow_stretch* con un'altra proprietà, **keep_ratio** 
+
+```python
+Image: 
+    source: "RESOURCES_KIVY/1_THE_LAB/RESOURCES/images/cake.jpg"
+    keep_ratio: False
+```
+
+Nel corso python, disponibile su _udemy_ per 29.99€, c'è una maggiore gestione della grafica dell'applicazione con i menù, l'apertura di nuove finestre ed il ritorno alle precedenti ecc.
+
+
+# Canvas
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
