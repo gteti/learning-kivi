@@ -388,7 +388,96 @@ Nel corso python, disponibile su _udemy_ per 29.99€, c'è una maggiore gestion
 
 # Canvas
 
+Canvas permette di poter disegnare nella finestra del programma con figure che si adattino al ridimensionamento. 
 
+## Instructions KV (Rectangle, Ellipse, Line, Color ...)
+Potremmo anche aggiungere una proprietà **canvas** anche all'interno di un pulsante poiché è anch'esso un widget.
+
+```python
+main.py
+class CanvasExample1(Widget):
+    pass
+
+thelab.kv
+<CanvasExample1>:
+    canvas:
+        Rectangle:
+        
+```
+
+Questo visualizzerà un rettangolo bianco in basso a sinistra della nostra finestra.
+Per gestire la posizione e la dimensione del rettangolo disegnato occorre utilizzare **pos** e **size**.
+Se volessimo posizionarlo al centro della finestra, potremo usare _self.center_ ma dovremo sottrarre la lunghezza e la larghezza. 
+
+```python
+thelab.kv
+<CanvasExample1>:
+    canvas:
+        Rectangle:
+            pos: self.center #dp(100), dp(200) #width, height from bottom left
+            size: dp(150), dp(100)  #width, height 
+
+
+```
+
+Per disegnare correttamente il rettangolo, utilizzeremo la definizione di variabili all'interno del _.kv_ file. 
+Aggiungiamo anche un ellisse.
+```python
+thelab.kv
+<CanvasExample1>:
+    canvas:
+        Rectangle:
+            pos: self.center_x-s/2,self.center_y-s/2 #dp(100), dp(200) #width, height from bottom left
+            size: s, s #dp(150), dp(100)  #width, height 
+        Ellipse:
+            pos: 200, 500
+            size: s, s/2
+
+```
+Per i rettangoli abbiamo come dimensioni _posX_, _posY_, _lunghezza_ e _larghezza_.
+
+### Line
+Disegnando una linea che abbia come punto _self.width_ si crea una linea che si adatta al ridimensionamento della finestra stessa.
+Per creare un segnale a dente invece utilizziamo 
+
+```python
+thelab.kv
+Line:
+    #points: (0,0, 100, 100, 200, 0, self.width, 100) # couple of x,y
+    points: (0,0, self.width/4, 100, self.width/2, 0, self.width *3/4, 100, self.width, 0) # couple of x,y
+    width: 2
+```
+
+Con _width: 2_ aumentiamo la dimensione della linea appena creata. 
+
+## Circle
+Proviamo a disegnare ora un cerchio. I parametri del **circle** sono definiti da _center\_x_, _center\_y_ e _raggio_:
+
+```python
+thelab.kv
+<CanvasExample3>:
+    canvas:
+        Line:
+            circle: (200,200,100) # center_x, center_y, radius
+            width: 2
+
+
+```
+
+Un ellisse invece ha bisogno di _center\_x_, _center\_y_, _raggio\_x_ e _raggio\_y_:
+
+2:02:29
+
+## Drawing by Code
+
+
+## Movements
+
+
+## Coordinates (RelativeLayout)
+
+
+## Finalize (Improve PageLayout with backforounds / Canvas Menu)
 
 
 

@@ -9,6 +9,12 @@ from kivy.uix.scrollview import ScrollView
 from kivy.metrics import dp
 from kivy.properties import BooleanProperty, StringProperty
 
+class CanvasExample1(Widget):
+    pass
+
+class CanvasExample3(Widget):
+    pass
+
 class WidgetsExample(GridLayout):
     my_text = StringProperty("") #"Hello!") #Default value
     text_input_str = StringProperty("foo") 
