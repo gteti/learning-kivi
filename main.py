@@ -7,13 +7,57 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.stacklayout import StackLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.metrics import dp
-from kivy.properties import BooleanProperty, StringProperty
+from kivy.properties import BooleanProperty, ObjectProperty, StringProperty, Clock
+from kivy.graphics.vertex_instructions import Line, Rectangle, Ellipse
+from kivy.graphics.context_instructions import Color
 
 class CanvasExample1(Widget):
     pass
 
 class CanvasExample3(Widget):
     pass
+
+class CanvasExample4(Widget):
+    #rect
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        with self.canvas:
+            Line(points=(100,100,400,500), width=2) #with tuples of points
+            Color(0,1,0)
+            Line(circle= (400,200,80), width=2)
+            Line(rectangle= (700,500,150, 100), width=5)
+            self.rect = Rectangle(pos=(700,200), size=(150,100))
+    
+    def on_btn_click(self):
+        #print("foo")
+        x, y = self.rect.pos
+        w, h = self.rect.size #rectangle size
+        inc = dp(10)
+
+        diff = self.width - (x + w)
+        if diff < inc:
+            inc = diff
+
+        x += inc
+        self.rect.pos = (x,y)
+        
+
+class CanvasExample5(Widget):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.ball_size = dp(50)
+        with self.canvas:
+            self.ball = Ellipse(pos=self.center, size=(self.ball_size,self.ball_size)) # pos=(100,100)
+        Clock.schedule_interval(self.update, 0.5) # 1second
+
+    def on_size(self, *args):
+        #print("on size: " +str(self.width) + ", " + str(self.height))
+        self.ball.pos = (self.center_x - self.ball_size/2, self.center_y - self.ball_size/2)
+    
+    def update(self, dt): #each update function requires a DT which is delta time
+        #print("update")
+        x,y = self.ball.pos 
+        self.ball.pos = (x+10,y)
 
 class WidgetsExample(GridLayout):
     my_text = StringProperty("") #"Hello!") #Default value
@@ -79,7 +123,7 @@ class BoxLayoutExample(BoxLayout):
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
         #se volessi cambiare l'orientazione del mio boxlayout
-        self.orientation = "vertical" #standard è orizontal
+        self.orientation = "vertical" #standard e' orizontal
         b1 = Button(text="A")  
         b2 = Button(text="B")
         b3 = Button(text="C")
@@ -94,6 +138,7 @@ class MainWidget(Widget):
 
 class TheLabApp(App):
     pass
+    
 
 
 TheLabApp().run()

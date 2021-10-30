@@ -466,13 +466,131 @@ thelab.kv
 
 Un ellisse invece ha bisogno di _center\_x_, _center\_y_, _raggio\_x_ e _raggio\_y_:
 
-2:02:29
+Possiamo aggiungere un colore alle figure disegnate nella finestra utilizzando la proprietà del _canvas_ chiamata **Color** ed al cui interno **rgb**.
+
+```python
+<CanvasExample3>:
+    canvas:
+        Color:
+            rgb: 1,0,0
+        Line:
+            circle: (200,200,100) # center_x, center_y, radius
+            width: 2
+        Line:
+            ellipse: (500,300,100, 200) # center_x, center_y, radius
+            width: 4
+        Line:
+            rectangle: (800, 100, 300, 100 ) # x, y, w, h
+            width: 4
+```
+
+Se la parte relativa al colore, venisse spostata dopo una delle figure, allora solo le successive verranno modificate ed avranno il colore definito.
+
+La proprietà **rgba** tiene conto anche del canale _Alpha_. 
+Queste non sono proprietà delle singole figure, ma proprietà globali del _Canvas_.
 
 ## Drawing by Code
+Per provare a definire degli oggetti grafici tramite il codice python, creiamo un _CanvasExample4_ e cercheremo di disegnare le stesse cose che visualizzavamo prima nel _canvas_ del _thelab.kv_ file. 
 
+Proviamo a disegnare una linea:
+```python
+thelab.kv
+CanvasExample4:  #per richiamare il codice di <CanvasExample4>
+
+main.py
+from kivy.graphics.vertex_instructions import Line
+class CanvasExample4(Widget):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        with self.canvas:
+            Line(points=(100,100,400,500)) #with tuples of points
+
+```
+I punti andranno indicati come tuple di valori X,Y. 
+Aggiungiamo la dimensione della riga con _width_ ed inoltre cambiamo il colore delle figure disegnate da quel punto in poi (come prima per _Color_):
+
+```python
+main.py
+class CanvasExample4(Widget):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        with self.canvas:
+            Line(points=(100,100,400,500), width=2) #with tuples of points
+            Color(0,1,0)
+            Line(circle= (400,200,80), width=2)
+            
+```
+Aggiungiamo ora un rettangolo ed uno che abbia un colore di sfondo.
+
+```python
+main.py
+class CanvasExample4(Widget):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        with self.canvas:
+            Line(points=(100,100,400,500), width=2) #with tuples of points
+            Color(0,1,0)
+            Line(circle= (400,200,80), width=2)
+            Line(rectangle= (700,500,150, 100), width=5)
+            Rectangle(pos=(700,200), size=(150,100))
+```
 
 ## Movements
+Vediamo come aggiornare le X,Y di una figura disegnata affinché si sposti nello spazio della finestra.
 
+## Move the Rectangle
+Aggiungiamo un pulsante e tramite il suo click, sposteremo il rettangolo verso destra. Il pulsante lo inseriremo nel _.kv_ file.
+
+```python
+thelab.kv
+<CanvasExample4>:
+    Button:
+        pos: 100, 400
+        text: "A"
+        on_press: root.on_btn_click()
+        width: "100dp"
+        height: "40dp"
+
+main.py
+def on_btn_click(self):
+        #print("foo")
+        x, y = self.rect.pos
+        w, h = self.rect.size #rectangle size
+        inc = dp(10)
+
+        diff = self.width - (x + w)
+        if diff < inc:
+            inc = diff
+
+        x += inc
+        self.rect.pos = (x,y)
+```
+Quando aggiorniamo la posizione viene anche richiamato il comando di _redraw_. La gestione dell'incremento con una variabile, in funzione anche della dimensione della finestra, permette inoltre la corretta visualizzazione del rettangolo al bordo quando cambiamo la dimensione della finestra: se ci sarà ulteriore spazio, continuerà a spostarsi; se lo spazio diminuisce allora verrà ridisegnato per farlo entrare nella finestra.
+
+## Ball and animation
+
+(2:13:30)
+Realizziamo CanvasExample5 per questa parte del codice dove realizzeremo una sfera che si muoverà nello spazio. 
+Non avendo le dimensioni della finestra non riusciamo a disegnare il cerchio, al centro del riquadro. La posizione inoltre non si aggiornerà in quanto il codice è presente nel main, nel CanvasExample5 nella funzione init, quindi verrà eseguito una volta sola e non si aggiornaerà con la dimensione effettiva della finestra.
+Aggiungendo la funzione 
+```python
+def on_size(self, *args):
+```
+possiamo accedere alle dimensioni della finestra e da questa aggiornare la posizione del cerchio. Siccome la posizione indicata è il punto inferiore a sinistra bisogna compensare questi. 
+
+Per spostare la palla avremo bisogno di utilizzare una funzione che richiamata periodicamente, modifichi la sua posizione.
+
+```python
+# main
+Clock.schedule_interval(self.update, 1) # 1second
+def update(self, dt): #each update function requires a DT which is delta time
+    x,y = self.ball.pos 
+    self.ball.pos = (x+10,y)
+```
+
+Giusto per verificare il funzionamento facciamo in modo che il cerchio si sposti autonomamente verso destra con un movimento di 10 pixels.
+
+(2:19:22)
 
 ## Coordinates (RelativeLayout)
 

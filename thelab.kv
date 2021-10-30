@@ -7,8 +7,10 @@
 #PageLayoutExample:  #per richiamare il codice di <PageLayoutExample>
 #WidgetsExample:  #per richiamare il codice di <WidgetsExample>
 #ImagesExample:  #per richiamare il codice di <ImagesExample>
-#CanvasExample1:  #per richiamare il codice di <CanvasExample1>
-CanvasExample3:  #per richiamare il codice di <CanvasExample3>
+#CanvasExample1:  #per richiamare il codice di <CanvasExample1> oppure la funzione del main con lo stesso nome
+#CanvasExample3:  #per richiamare il codice di <CanvasExample3> oppure la funzione del main con lo stesso nome
+#CanvasExample4:  #per richiamare il codice di <CanvasExample4> oppure la funzione del main con lo stesso nome 
+CanvasExample5:  #per richiamare il codice di <CanvasExample5> oppure la funzione del main con lo stesso nome
 
 
 
@@ -212,6 +214,8 @@ CanvasExample3:  #per richiamare il codice di <CanvasExample3>
 
 <CanvasExample3>:
     canvas:
+        Color:
+            rgba: 1,0,0, .3
         Line:
             circle: (200,200,100) # center_x, center_y, radius
             width: 2
@@ -222,6 +226,11 @@ CanvasExample3:  #per richiamare il codice di <CanvasExample3>
             rectangle: (800,100, 300,100 ) # x, y, w, h
             width: 4
 
-
-
+<CanvasExample4>:
+    Button:
+        pos: 100, 400
+        text: "A"
+        on_press: root.on_btn_click()
+        width: "100dp"
+        height: "40dp"
 
