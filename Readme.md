@@ -592,7 +592,70 @@ Giusto per verificare il funzionamento facciamo in modo che il cerchio si sposti
 
 (2:19:22)
 
+### Exercise
+
+Ora voglia che la pallina, dopo essere arrivata al bordo della finestra, quindi muovendosi su X,Y, rimbalzi indietro quando incontra il bordo.
+Pertanto definiamo una **vx** e **vy** rispettivamente per velocità di X e Y in *main.py*.
+
+```python
+#main.py
+class CanvasExample5(Widget):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.ball_size = dp(50)
+        self.vx = dp(3)
+        self.vy = dp(4)
+```
+
+Ed aggiorniamo anche il metodo *update*:
+```python
+def update(self, dt): #each update function requires a DT which is delta time
+        #print("update")
+        x,y = self.ball.pos 
+        x += self.vx
+        y += self.vy
+        #self.ball.pos = (x+10,y)
+        self.ball.pos = (x,y)
+```
+
+Rilanciando il programma, *main.py* possiamo vedere di come la pallina ora si muova lunga X e Y.
+La pallina però può uscire dalla finestra, quindi aggiungiamo delle condizioni alla funzione *update*:
+
+```python
+def update(self, dt): #each update function requires a DT which is delta time
+        #print("update")
+        x,y = self.ball.pos 
+        x += self.vx
+        y += self.vy
+        #self.ball.pos = (x+10,y)
+
+        if y + self.ball_size > self.height:
+            y = self.height - self.ball_size
+            self.vy = -self.vy
+        if x + self.ball_size > self.width:
+            x = self.width - self.ball_size
+            self.vx = -self.vx
+        if y<0:
+            y = 0
+            self.vy = -self.vy
+        if x<0:
+            x = 0
+            self.vx = -self.vx
+
+        self.ball.pos = (x,y)
+```
+
 ## Coordinates (RelativeLayout)
+Creiamo un CanvasExample6, come classe nel *main.py* e come richiamo nel *thelab.kv*. Aggiungiamo però al canvas un pulsante per iniziare.
+
+```python
+#thelab.kv
+<CanvasExample6>:
+    Button:
+        text: "A"
+```
+
+Avviando il programma vedremo un semplice pulsante posto nell'angolo in basso a sinistra della finestra.
 
 
 ## Finalize (Improve PageLayout with backforounds / Canvas Menu)

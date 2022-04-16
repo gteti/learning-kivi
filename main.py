@@ -46,6 +46,8 @@ class CanvasExample5(Widget):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.ball_size = dp(50)
+        self.vx = dp(9) #3
+        self.vy = dp(12) #4
         with self.canvas:
             self.ball = Ellipse(pos=self.center, size=(self.ball_size,self.ball_size)) # pos=(100,100)
         Clock.schedule_interval(self.update, 0.5) # 1second
@@ -57,7 +59,27 @@ class CanvasExample5(Widget):
     def update(self, dt): #each update function requires a DT which is delta time
         #print("update")
         x,y = self.ball.pos 
-        self.ball.pos = (x+10,y)
+        x += self.vx
+        y += self.vy
+        #self.ball.pos = (x+10,y)
+
+        if y + self.ball_size > self.height:
+            y = self.height - self.ball_size
+            self.vy = -self.vy
+        if x + self.ball_size > self.width:
+            x = self.width - self.ball_size
+            self.vx = -self.vx
+        if y<0:
+            y = 0
+            self.vy = -self.vy
+        if x<0:
+            x = 0
+            self.vx = -self.vx
+
+        self.ball.pos = (x,y)
+
+class CanvasExample6(Widget):
+    pass
 
 class WidgetsExample(GridLayout):
     my_text = StringProperty("") #"Hello!") #Default value
