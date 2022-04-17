@@ -236,5 +236,46 @@ CanvasExample6:  #per richiamare il codice di <CanvasExample6> oppure la funzion
         height: "40dp"
 
 <CanvasExample6>:
-    Button:
-        text: "A"
+    #Button:
+    #RelativeLayout:
+        #canvas.before:
+        #canvas:
+        #    Rectangle:
+        ##text: "A"
+        #pos: 100,100
+    
+    #part 2
+    #BoxLayout:
+    #    Button:
+    #        text: "A"
+    #    Button:
+    #        text: "B"
+
+    #part 2 with widget modification
+    #BoxLayout:
+    #    size: root.size
+    #    Widget:
+    #        canvas:
+    #            Color:
+    #                rgb: 0, 1, 0
+    #            Rectangle:
+    #                size: self.size
+    #    Button:
+    #        text: "B"
+
+    #part 3 with widget modification
+    BoxLayout:
+        size: root.size
+        Widget:
+            canvas:
+                Color:
+                    rgb: 0, 1, 0
+                Rectangle:
+                    size: self.size
+        RelativeLayout:#Widget:
+            canvas:
+                Color:
+                    rgb: 0, 0, 1
+                Rectangle:
+                    size: self.size
+                    #pos: self.pos

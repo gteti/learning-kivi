@@ -656,7 +656,185 @@ Creiamo un CanvasExample6, come classe nel *main.py* e come richiamo nel *thelab
 ```
 
 Avviando il programma vedremo un semplice pulsante posto nell'angolo in basso a sinistra della finestra.
+Il pulsante è un *Widget* quindi posso aggiungere un canvas al suo interno:
 
+```python
+#thelab.kv
+<CanvasExample6>:
+    Button:
+        canvas:
+            Rectangle:
+        text: "A"
+```
+
+Lanciando il programma possiamo quindi vedere che il *Rettangolo* viene visualizzato sopra il pulsante.
+Siccome il rettangolo viene creato dopo la realizzazione del pulsante, apparirà sopra. L'ordine è quindi importante e per cambiarlo dobbiamo usare *canvas.before*:
+
+```python
+#thelab.kv
+<CanvasExample6>:
+    Button:
+        canvas.before:
+            Rectangle:
+        text: "A"
+```
+
+Esiste anche *canvas.after*.
+Se definissimo una posizione X,Y per il pulsante:
+
+```python
+#thelab.kv
+<CanvasExample6>:
+    Button:
+        canvas.before:
+            Rectangle:
+        text: "A"
+        pos: 100,100
+```
+
+Potremmo vedere come solo il pulsante venga sposta alle coordinate 100,100 e non il rettangolo. 
+
+- Il canvas viene sempre disegnato a partire dalla posizione 0,0. L'unica eccezione è utilizzare il *RelativeLayout*.
+
+Cambiamo il Pulsante con un **RelativeLayout**:
+
+```python
+#thelab.kv
+<CanvasExample6>:
+    RelativeLayout:
+        canvas:
+            Rectangle:
+        #text: "A"
+        pos: 100,100
+```
+
+Così vediamo che il rettangolo disegnato all'interno del canvas, viene spostato del valore indicato nella posizione. 
+Il *RelativeLayout* è l'unico componente grafico a comportarsi così.
+
+Proviamo ancora il comportamento appena descritto. Cambiamo il codice utilizzando un *BoxLayout* al cui interno inseriamo 2 pulsanti.
+
+```python
+#thelab.kv
+<CanvasExample6>:
+    BoxLayout:
+        Button:
+            text: "A"
+        Button:
+            text: "B"
+```
+
+Questo è dovuto al fatto che la classe CanvasExample6 del *main* non tiene conto della posizione. Quindi al *BoxLayout* darà una dimensione standard che è 100x100. Se volessimo dare al *BoxLayout* l'intera dimensione della finestra, dovremmo specificare la dimensione con il comando *size*.
+
+```python
+#thelab.kv
+<CanvasExample6>:
+    BoxLayout:
+    size: root.size
+        Button:
+            text: "A"
+        Button:
+            text: "B"
+```
+
+Negli esempi precedenti non abbiamo dovuto fare questo perché non partivamo da un Canvas per istanziare i componenti grafici, ma partivamo direttamente dal *BoxLayout* e quindi occupava tutta la finestra. 
+
+Sostituendo ad uno dei pulsante, un **Widget** posso creare al suo interno un *canvas*. 
+
+```python
+#thelab.kv
+BoxLayout:
+        size: root.size
+        Widget:
+            canvas:
+                Rectangle:
+                
+        Button:
+            text: "B"
+```
+
+Il rettangolo occuperà parte della parte sinistra della finestra. Posso invece usare i parametri size affinché il rettangolo creato occupi tutta la sua parte di schermo, cioè la dimensione del *widget*. Ne cambiamo anche il color utilizzando la proprietà *Color* del *canvas*.
+
+```python
+#thelab.kv
+ BoxLayout:
+        size: root.size
+        Widget:
+            canvas:
+                Color:
+                    rgb: 0, 1, 0
+                Rectangle:
+                    size: self.size
+        Button:
+            text: "B"
+```
+
+Decidiamo di cambiare il pulsante creato in precedenza, "B", con un widget rettangolo di colore blu. 
+
+```python
+#thelab.kv
+#part 3 with widget modification
+    BoxLayout:
+        size: root.size
+        Widget:
+            canvas:
+                Color:
+                    rgb: 0, 1, 0
+                Rectangle:
+                    size: self.size
+        Widget:
+            canvas:
+                Color:
+                    rgb: 0, 0, 1
+                Rectangle:
+                    size: self.size
+```
+
+Il rettangolo appena creato viene sovrapposto al precedente. Dobbiamo definire la sua posizione per poterlo vedere a fianco a quello creato in precedenza. 
+
+```python
+#thelab.kv
+#part 3 with widget modification
+    BoxLayout:
+        size: root.size
+        Widget:
+            canvas:
+                Color:
+                    rgb: 0, 1, 0
+                Rectangle:
+                    size: self.size
+        Widget:
+            canvas:
+                Color:
+                    rgb: 0, 0, 1
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+```
+
+Se cambiassimo il secondo widget con un *RelativeLayout* possiamo evitare di inserire la posizione come attributo.
+
+```python
+#thelab.kv
+#part 3 with widget modification
+    BoxLayout:
+        size: root.size
+        Widget:
+            canvas:
+                Color:
+                    rgb: 0, 1, 0
+                Rectangle:
+                    size: self.size
+        RelativeLayout:
+            canvas:
+                Color:
+                    rgb: 0, 0, 1
+                Rectangle:
+                    size: self.size
+```
+
+(2:29:00)
+
+### Esercizio
 
 ## Finalize (Improve PageLayout with backforounds / Canvas Menu)
 
