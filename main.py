@@ -81,6 +81,9 @@ class CanvasExample5(Widget):
 class CanvasExample6(Widget):
     pass
 
+class CanvasExample7(BoxLayout):
+    pass
+
 class WidgetsExample(GridLayout):
     my_text = StringProperty("") #"Hello!") #Default value
     text_input_str = StringProperty("foo") 

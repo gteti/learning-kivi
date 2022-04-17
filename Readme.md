@@ -835,8 +835,71 @@ Se cambiassimo il secondo widget con un *RelativeLayout* possiamo evitare di ins
 (2:29:00)
 
 ### Esercizio
+Creare *CanvasExample7* per disegnare la finestra la bandiera francese. 
 
-## Finalize (Improve PageLayout with backforounds / Canvas Menu)
+```python
+#thelab.kv
+# in testa aggiungere:
+CanvasExample7:  #per richiamare il codice di <CanvasExample7> oppure la funzione del main con lo stesso nome
+
+
+    <CanvasExample7>:
+    RelativeLayout:
+        canvas:
+            Color:
+                rgb: 0, 0, 1
+            Rectangle:
+                size: self.size
+    
+    RelativeLayout:
+        canvas:
+            Color:
+                rgb: 1, 1, 1
+            Rectangle:
+                size: self.size
+    
+    RelativeLayout:
+        canvas:
+            Color:
+                rgb: 1, 0, 0
+            Rectangle:
+                size: self.size
+```
+
+```python
+#main.py
+
+class CanvasExample7(BoxLayout):
+    pass
+```
+
+## Learning kivi - part 2 - Galaxy V1
+
+Iniziamo ora la seconda parte del videocorso.
+Galaxy è un gioco in cui il giocatore deve muovere la sua astronave(cursore) lungo un percorso bianco.
+
+Gli scopi del progetto sono:
+- Creare un gioco Desktop/mobile, IOS e Android, da A a Z
+- Allenarsi nello sviluppo di app con Kivy (specialmente con i canvas)
+- Imparare a strutturare e organizzare il codice
+- Migliorare le capacità di debug (errori, comportamento sbagliato)
+- Sviluppo di algoritmi (generazione di sfondi, visualizzazione in prospettiva)
+- Creare ed implementare tutti gli elementi del gioco (sfondo, l'astronave, ...)
+- Codificare la logica del gioco (le azioni dell'utente, fine del gioco, il punteggio, i suoni, ...)
+
+Step 1 -> disegnare la griglia, prospettiva ed aggiungere il movimento
+
+Step 2 -> Generare il percorso bianco. Visualizzare l'astronave e gestire le collisioni
+
+Step 3 -> Finalizzare il gioco (menu, suoni, sfondo, punteggio, ...) 
+
+## V1
+
+TODO Scrivere instanziamento delle classi
+
+(2:39:23)
+
+
 
 
 
