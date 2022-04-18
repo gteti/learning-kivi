@@ -895,9 +895,95 @@ Step 3 -> Finalizzare il gioco (menu, suoni, sfondo, punteggio, ...)
 
 ## V1
 
-TODO Scrivere instanziamento delle classi
-
 (2:39:23)
+Realizziamo il *main.py* pulito insieme al relativo *galaxy.kv*:
+
+```python
+#main.py
+from kivy.app import App
+from kivy.uix.widget import Widget
+
+class MainWidget(Widget):
+    pass
+
+
+class GalaxyApp(App):
+    pass
+
+GalaxyApp().run()
+```
+
+    
+```python
+#galaxy.kv
+MainWidget: #per richiamare il codice di <MainWidget> oppure la funzione del main con lo stesso nome
+
+```
+
+Aggiungiamo delle variabili nel *main.py* sia per la prospettiva che per la dimensione della finestra:
+
+```python
+#main.py
+class MainWidget(Widget):
+    perspective_point_x = NumericProperty(0)
+    perspective_point_y = NumericProperty(0)
+
+    def __init__(self, **kwargs):
+        super(MainWidget, self).__init__(**kwargs)
+        #self.bind(pos=self.update_perspective_point) #creato da copilot
+        print("INIT W:" + str(self.width)+ " H:" + str(self.height))
+```
+
+Come risultato otteniamo:
+    
+```bash
+INIT W:100 H:100
+```
+
+Che è il valore standard e non si rifa alla dimensione corrente della finestra in quel particolare momento. Funzionerebbe se fosse lanciato dal *parent* sulla dimensione della finestra. Per gestire meglio la dimensione della finestra ed il riadattamento, oltre ad assegnare i valori della finestra, opportunamente scalati a X e Y (prospettiva) definiamo le due funzioni che gestiscono questi valori:
+
+    
+```python
+#main.py
+class MainWidget(Widget):
+perspective_point_x = NumericProperty(0)
+perspective_point_y = NumericProperty(0)
+
+def __init__(self, **kwargs):
+    super(MainWidget, self).__init__(**kwargs)
+    #self.bind(pos=self.update_perspective_point) #creato da copilot
+    print("INIT W:" + str(self.width)+ " H:" + str(self.height))
+
+def on_parent(self, widget, parent):
+    print("PARENT W:" + str(self.width)+ " H:" + str(self.height))
+
+def on_size(self, *args):
+    #print("SIZE W:" + str(self.width)+ " H:" + str(self.height))
+    self.perspective_point_x = self.width/2
+    self.perspective_point_y = self.height * 0.75
+
+def on_perspective_point_x(self, widget, value):
+    print("PX:" + str(value))
+
+def on_perspective_point_y(self, widget, value):
+    print("PY:" + str(value))
+```
+
+Possiamo farlo anche dal *.kv* file quindi commentiamo le righe nel main e scriviamo nel galaxy.kv:
+
+```python
+#galaxy.kv
+MainWidget: #per richiamare il codice di <MainWidget> oppure la funzione del main con lo stesso nome
+
+
+<MainWidget>:
+    perspective_point_x : self.width/2
+    perspective_point_y : self.height*0.75
+```
+
+(2:44:36)
+### Vertical lines
+
 
 
 
