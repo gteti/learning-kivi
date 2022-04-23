@@ -984,8 +984,59 @@ MainWidget: #per richiamare il codice di <MainWidget> oppure la funzione del mai
 (2:44:36)
 ### Vertical lines
 
+Vogliamo ora visualizzare le linee verticali che costituiranno la nostra griglia. Poi useremo il *transform* per trasformare le linee verticali in prospettiva. Aggiungiamo al *main.py* la funzione che gestisce le linee verticali:
+
+```python
+#main.py
+def init_vertical_lines(self):
+    with self.canvas:
+        Color(1, 1, 1)
+        Line(points=[100, 0, 100, 100])
+```
+
+Vediamo di come la linea disegnata si sposa bene con la finestra ed il suo ridimensionamento. Vogliamo ora disegnare la linea al centro della finestra. 
+Aggiungiamo una variabile alla classed *MainWidget* che contiene la linea:
+
+```python
+#main.py
+
+line = None
+
+def init_vertical_lines(self):
+    with self.canvas:
+        Color(1, 1, 1)
+        self.line = Line(points=[100, 0, 100, 100]) 
+```
+
+Creiamo una funzione che assegni nuovi punti alla linea verticale. Utilizzare la funzione di *init_vertical_lines* nell'init ci crea delle problematiche sul disegno della linea usando le dimensioni della finestra: lì *self.width* sarà uguale a 100. Se usassimo la funzione di init in *on_size* il disegno verrebbe richiamato ogni volta che la finestra si ridimensiona e questo provecherebbe disegni orribili. Lasciamo la chiamata in *init* ed aggiorniamo le coordinate che chiameremo invece nel *on_size*.
+
+```python
+#main.py
+def __init__(self, **kwargs):
+        super(MainWidget, self).__init__(**kwargs)
+        print("INIT W:" + str(self.width)+ " H:" + str(self.height))
+        self.init_vertical_lines()
+
+ def on_size(self, *args):
+        self.update_vertical_lines()
+
+ def init_vertical_lines(self):
+        with self.canvas:
+            Color(1, 1, 1)
+            self.line = Line(points=[100, 0, 100, 100]) 
+
+    def update_vertical_lines(self):
+        center_x = int(self.width / 2)
+
+        self.line.points = [center_x, 0, center_x, 100]
+
+```
+
+Vediamo che la linea è posizionata al centro della finestra e quando la ridimensiono, resta sempre al posto giusto.
 
 
+
+(2:47:00)
 
 
 
