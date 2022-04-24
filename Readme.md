@@ -1034,18 +1034,100 @@ def __init__(self, **kwargs):
 
 Vediamo che la linea è posizionata al centro della finestra e quando la ridimensiono, resta sempre al posto giusto.
 
+Adesso disegniamo le linee verticali ed orizzontali. Cambiamo la variabile *line* in *vertical_lines* come lista. Nel *init_vertical_lines* inizializzeremo le lista di linee, solo creandole. Nell' *update_vertical_lines* le definiremo per essere visualizzate correttamente.
 
+```python
+#main.py
+class MainWidget(Widget):
+    perspective_point_x = NumericProperty(0)
+    perspective_point_y = NumericProperty(0)
 
-(2:47:00)
+    #line = None
+    V_NB_LINES = 7
+    V_LINES_SPACING = .1 # percentage in screen width
+    vertical_lines = []
 
+     def init_vertical_lines(self):
+        with self.canvas:
+            Color(1, 1, 1)
+            for i in range(0,self.V_NB_LINES):
+                self.vertical_lines.append(Line())
 
+    def update_vertical_lines(self):
+        central_line_x = int(self.width / 2)
+        spacing = self.V_LINES_SPACING * self.width
+        offset = -int(self.V_NB_LINES / 2)
 
+        for i in range(0,self.V_NB_LINES):
+            line_x = int(central_line_x + offset * spacing)
+            self.vertical_lines[i].points = [line_x, 0, line_x, self.height]
 
+            offset += 1
 
+```
 
+Usiamo un numero dispari per *V_NB_LINES* perché altrimenti la visualizzazione non sarebbe bilanciata dal centro della finestra.
 
+(2:55:13)
 
+### Principle: Perspective transformation
 
+Abbiamo utilizzato *V_SPACING* per definire la distanza fra le linee verticali affinché fosse uguale per tutte ed abbiamo disegnato le linee affinché avessero la dimensione della finestra.
+Come aggiungiamo la prospettiva? Useremo *(perspective_x, perspective_y)* per definire il punto di prospettiva. Per fare questo useremo una funzione **transform_perspective()** versione 1. Dobbiamo considerare che il delta di x dipende da y. 
+
+### Prespective Transformation: Applcation Version 1
+
+Utilizziamo queste funzioni perché possiamo facilmente cambiare la riga del return affinché usi una o l'altra funzione implementata (*transform_2D* da/verso *transform_perspective*). Chiameremo la funzione *trasform* subito prima dell'assegnazione dei punti in *update_vertical_lines*.
+
+```python
+# main.py
+class MainWidget(Widget):
+    perspective_point_x = NumericProperty(0)
+    perspective_point_y = NumericProperty(0)
+
+    #line = None
+    V_NB_LINES = 7
+    V_LINES_SPACING = .1 # percentage in screen width
+    vertical_lines = []
+
+## ...
+
+def update_vertical_lines(self):
+        central_line_x = int(self.width / 2)
+        spacing = self.V_LINES_SPACING * self.width
+        #self.line.points = [central_line_x, 0, central_line_x, 100]
+        offset = -int(self.V_NB_LINES / 2)
+
+        for i in range(0,self.V_NB_LINES):
+            line_x = int(central_line_x + offset * spacing)
+
+            x1, y1 = self.transform(line_x, 0)
+            x2, y2 = self.transform(line_x, self.height)
+            #self.vertical_lines[i].points = [line_x, 0, line_x, self.height]
+            self.vertical_lines[i].points = [x1, y1, x2, y2]
+
+            offset += 1 
+
+    def transform(self, x, y):
+
+        #return self.transform_2D(x, y)
+        return self.transform_perspective(x, y)
+
+    def transform_2D(self, x, y):
+        return int(x), int(y)
+
+    def transform_perspective(self, x, y):
+        tr_y = y * self.perspective_point_y / self.height
+        if tr_y > self.perspective_point_y:
+            tr_y = self.perspective_point_y
+        
+        diff_x = x - self.perspective_point_x
+        diff_y = self.perspective_point_y - tr_y
+        proportion_y = diff_y / self.perspective_point_y # 1 when diff_y == self.perspective_point_y or 0 when diff_y == 0 
+
+        tr_x = self.perspective_point_x + diff_x * proportion_y
+        return int(tr_x), int(tr_y)
+```
 
 
 
