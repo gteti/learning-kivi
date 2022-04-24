@@ -1095,7 +1095,6 @@ class MainWidget(Widget):
 def update_vertical_lines(self):
         central_line_x = int(self.width / 2)
         spacing = self.V_LINES_SPACING * self.width
-        #self.line.points = [central_line_x, 0, central_line_x, 100]
         offset = -int(self.V_NB_LINES / 2)
 
         for i in range(0,self.V_NB_LINES):
@@ -1103,7 +1102,6 @@ def update_vertical_lines(self):
 
             x1, y1 = self.transform(line_x, 0)
             x2, y2 = self.transform(line_x, self.height)
-            #self.vertical_lines[i].points = [line_x, 0, line_x, self.height]
             self.vertical_lines[i].points = [x1, y1, x2, y2]
 
             offset += 1 
@@ -1129,6 +1127,71 @@ def update_vertical_lines(self):
         return int(tr_x), int(tr_y)
 ```
 
+(3:11:38)
 
+### Exercise
 
+Vogliamo evitare la linea centrale in modo da lasciare libera l' "intera" strada al centro.  
+Riduciamo *V_NB_LINES* a 4 e vogliamo shiftare il disegno a destra. Lavoreremo in *update_vertical_lines* e possiamo o aumentare la *central_line_x* di metà dello *spacing* oppure cambiare l'*offset* aggiungendo metà di una riga (0.5).
 
+```python
+# main.py
+def update_vertical_lines(self):
+        central_line_x = int(self.width / 2)
+        spacing = self.V_LINES_SPACING * self.width
+        offset = -int(self.V_NB_LINES / 2) + 0.5
+
+        for i in range(0,self.V_NB_LINES):
+            line_x = int(central_line_x + offset * spacing)
+
+            x1, y1 = self.transform(line_x, 0)
+            x2, y2 = self.transform(line_x, self.height)
+            self.vertical_lines[i].points = [x1, y1, x2, y2]
+
+            offset += 1 
+
+```
+
+(3:14:40)
+
+### Horizontal lines
+
+Vogliamo ora aggiungere le linee orizzontali. Aggiungiamo le variabili necessarie alla classe e il codice necessario nell' *init*. Definiamo **init_horizontal_lines** e **update_horizontal_lines** e in quest'ultima, utilizziamo xmin e xman per capire i punti di partenza e fine delle linee verticali. Ricordiamo che l'offset è negativo e pertanto andrà sommato o sottratto nei punti necessari. 
+
+    
+```python
+# main.py
+H_NB_LINES = 4
+H_LINES_SPACING = .2 # percentage in screen height
+horizontal_lines = []
+
+def init_horizontal_lines(self):
+    with self.canvas:
+        Color(1, 1, 1)
+        for i in range(0,self.H_NB_LINES):
+            self.horizontal_lines.append(Line())
+
+def update_horizontal_lines(self):
+    central_line_x = int(self.width / 2)
+    spacing = self.V_LINES_SPACING * self.width
+    offset = -int(self.V_NB_LINES / 2) + 0.5
+
+    xmin = central_line_x + offset * spacing
+    xmax = central_line_x - offset * spacing
+
+    spacing_y = self.H_LINES_SPACING * self.height
+
+    for i in range(0,self.H_NB_LINES):
+        line_y = i * spacing_y
+    
+        x1, y1 = self.transform(xmin, line_y)
+        x2, y2 = self.transform(xmax, line_y)
+        #self.vertical_lines[i].points = [line_x, 0, line_x, self.height]
+        self.horizontal_lines[i].points = [x1, y1, x2, y2] 
+```
+
+Dato che lo spacing è costante fra le linee, alcune di quelle orizzontali ci possono apparire più sottili di altre. Dobbiamo quindi aggiornare la funzione *transform*.
+
+(3:21:55)
+
+### Horizontal lines perspective
