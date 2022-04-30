@@ -1195,3 +1195,39 @@ Dato che lo spacing è costante fra le linee, alcune di quelle orizzontali ci po
 (3:21:55)
 
 ### Horizontal lines perspective
+
+Le linee orizzontali sono via via più corte man mano che ci avviciniamo al vertice della prospettiva. Vogliamo trasformarlo in qualcosa che venga "*attratto*" dalla prospettiva, lo spacing anche diventa sempre più piccolo man mano che ci si avvicina. 
+
+*factor_y* dovrà diminuire più velocemente della prospettiva, useremo *factor_y*^2. 
+
+Modificheremo il codice della *transform_perspective*. Qui cambieremo prima *tr_y* in *lin_y*, *proportion_y* in *factor_y* e poi calcoleremo il factor_y al quadrato.
+
+
+```python
+# main.py
+V_LINES_SPACING = .25 # percentage in screen width
+V_NB_LINES = 10
+
+H_LINES_SPACING = .1
+
+def transform_perspective(self, x, y):
+        lin_y = y * self.perspective_point_y / self.height
+        if lin_y > self.perspective_point_y:
+            lin_y = self.perspective_point_y
+        
+        diff_x = x - self.perspective_point_x
+        diff_y = self.perspective_point_y - lin_y
+        factor_y = diff_y / self.perspective_point_y # 1 when diff_y == self.perspective_point_y or 0 when diff_y == 0 
+
+        factor_y = factor_y * factor_y
+
+        tr_x = self.perspective_point_x + diff_x * factor_y
+        tr_y = self.perspective_point_y - factor_y * self.perspective_point_y # perspective_point_y is the maximum height
+        
+        return int(tr_x), int(tr_y)
+```
+
+Potremmo accentuare ancora l' *attrazione* della prospettiva, aggiungiamo *factor_y* ^ N  con la funzione **pow** di python.
+
+### Forward movement
+
