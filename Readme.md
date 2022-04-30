@@ -1231,3 +1231,39 @@ Potremmo accentuare ancora l' *attrazione* della prospettiva, aggiungiamo *facto
 
 ### Forward movement
 
+Adesso vogliamo l'animazione del movimento in avanti. Lo faremo, come abbiamo detto, shiftando le linee orizzontali in avanti. Sottrarremo sulla linea y facendo andare le linee fuori dallo schermo. Dobbiamo implementare un meccanismo di *loop* in modo che quando shiftiamo più del vertical spacing, torniamo alla posizione iniziale. Per fare questo creeremo **current_offset_y** e lo assegneremo alle posizioni di y, 60 FPS. Definiremo inoltre la velocità di aggiornamento. Non abbiamo più la necessità di richiamare le funzioni in *on_size* lo faremo nell' **update** che stiamo definendo. 
+
+```python
+# main.py
+current_offset_y = 0
+SPEED = 2
+
+def __init__(self, **kwargs):
+    super(MainWidget, self).__init__(**kwargs)
+    print("INIT W:" + str(self.width)+ " H:" + str(self.height))
+    self.init_vertical_lines()
+    self.init_horizontal_lines()
+    Clock.schedule_interval(self.update, 1.0 / 60.0)
+
+def on_size(self, *args):
+    #print("SIZE W:" + str(self.width)+ " H:" + str(self.height))
+    #self.perspective_point_x = self.width/2
+    #self.perspective_point_y = self.height * 0.75
+    pass 
+    #self.update_vertical_lines()
+    #self.update_horizontal_lines()
+
+def update(self, dt):
+    self.update_vertical_lines()
+    self.update_horizontal_lines()
+    self.current_offset_y += self.SPEED
+    spacing_y = self.H_LINES_SPACING * self.height
+    if self.current_offset_y >= spacing_y:
+        self.current_offset_y = 0
+```
+
+Controllando se il *current_offset_y* supera lo *spacing_y* possiamo dare un senso di ciclicità alle linee. 
+
+### Delta Time
+
+https://youtu.be/l8Imtec4ReQ?t=12971
