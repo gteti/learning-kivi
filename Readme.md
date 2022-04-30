@@ -1266,4 +1266,21 @@ Controllando se il *current_offset_y* supera lo *spacing_y* possiamo dare un sen
 
 ### Delta Time
 
-https://youtu.be/l8Imtec4ReQ?t=12971
+Dobbiamo modificare **dt** delta time nella funzione *update*. Lo **scheduler** che abbiamo definito potrebbe non essere così preciso perché magari il computer o lo smartphone stanno facendo altro. Pertanto potrebbe passare da 60 FPS a qualcosa di meno e quindi la *velocità* a cui si muovono le linee sarà inferiore. 
+Se il tempo impiegato fra una chiamata e l'altrà è superiore, dovremo aggiornare le linee più velocemente. Se moltiplicassimo il *dt* per 60 avremo quasi 1, a volte di più ed altre di meno. Definiamo quindi il **time_factor** come *dt* x 60. Così che la velocità sia calcolata ed incrementata/decrementata correttamente in funzione di qualsiasi dispositivo su cui gira l'app.
+
+```python
+# main.py
+def update(self, dt):
+        time_factor = dt * 60
+        self.update_vertical_lines()
+        self.update_horizontal_lines()
+        self.current_offset_y += self.SPEED * time_factor
+        spacing_y = self.H_LINES_SPACING * self.height
+        if self.current_offset_y >= spacing_y:
+            self.current_offset_y = 0
+```
+
+### Exercise
+
+https://youtu.be/l8Imtec4ReQ?t=13237
