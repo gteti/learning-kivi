@@ -20,6 +20,9 @@ class MainWidget(Widget):
     current_offset_y = 0
     SPEED = 2
 
+    SPEED_X = 3
+    current_offset_x = 0
+
     def __init__(self, **kwargs):
         super(MainWidget, self).__init__(**kwargs)
         #self.bind(pos=self.update_perspective_point) #creato da copilot
@@ -61,7 +64,7 @@ class MainWidget(Widget):
         offset = -int(self.V_NB_LINES / 2) + 0.5
 
         for i in range(0,self.V_NB_LINES):
-            line_x = int(central_line_x + offset * spacing)
+            line_x = int(central_line_x + offset * spacing + self.current_offset_x)
 
             x1, y1 = self.transform(line_x, 0)
             x2, y2 = self.transform(line_x, self.height)
@@ -81,8 +84,8 @@ class MainWidget(Widget):
         spacing = self.V_LINES_SPACING * self.width
         offset = -int(self.V_NB_LINES / 2) + 0.5
 
-        xmin = central_line_x + offset * spacing
-        xmax = central_line_x - offset * spacing
+        xmin = central_line_x + offset * spacing + self.current_offset_x
+        xmax = central_line_x - offset * spacing + self.current_offset_x
 
         spacing_y = self.H_LINES_SPACING * self.height
 
@@ -139,9 +142,15 @@ class MainWidget(Widget):
         spacing_y = self.H_LINES_SPACING * self.height
         if self.current_offset_y >= spacing_y:
             self.current_offset_y = 0
+
+        self.current_offset_x += self.SPEED_X * time_factor
             
 
 class GalaxyApp(App):
     pass
 
 GalaxyApp().run()
+
+from kivy.config import Config
+Config.set('graphics', 'width', '200')
+Config.set('graphics', 'height', '200')
