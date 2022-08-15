@@ -1283,4 +1283,110 @@ def update(self, dt):
 
 ### Exercise
 
-https://youtu.be/l8Imtec4ReQ?t=13237
+Dobbiamo aggiungere il movimento per x esattamente come fatto per y, ci sarà utile quando la navicella si sposterà.
+Non ci sarà bisogno di creare il loop, in questo caso, perché se la navicella andrà oltre il limite, verrà distrutta. Attenzione che spostando le linee verticali, quelle orizzontali non seguono lo spostamento e non sono allineate. Dobbiamo usare questo offset anche per i calcoli di *xmin* e *xmax* per le linee orizzontali.
+
+```python
+# main.py
+
+SPEED_X = 3
+current_offset_x = 0
+
+def update_vertical_lines(self):
+    central_line_x = int(self.width / 2)
+    spacing = self.V_LINES_SPACING * self.width
+    offset = -int(self.V_NB_LINES / 2) + 0.5
+
+    for i in range(0,self.V_NB_LINES):
+        line_x = int(central_line_x + offset * spacing + self.current_offset_x)
+# ... omiss
+
+def update_horizontal_lines(self):
+    central_line_x = int(self.width / 2)
+    spacing = self.V_LINES_SPACING * self.width
+    offset = -int(self.V_NB_LINES / 2) + 0.5
+
+    xmin = central_line_x + offset * spacing + self.current_offset_x
+    xmax = central_line_x - offset * spacing + self.current_offset_x
+# ... omiss
+
+def update(self, dt):
+    time_factor = dt * 60
+    self.update_vertical_lines()
+    self.update_horizontal_lines()
+    self.current_offset_y += self.SPEED * time_factor
+    spacing_y = self.H_LINES_SPACING * self.height
+    if self.current_offset_y >= spacing_y:
+        self.current_offset_y = 0
+
+    self.current_offset_x += self.SPEED_X * time_factor
+            
+```
+
+### Exercise 2
+
+Per questo esercizio vogliamo controllare lo spostamento delle linee a destra e sinistra a seconda della pressione della relativa freccia. 
+
+    
+```python
+# main.py
+#..
+    SPEED_X = 12 #3
+    current_speed_x = 0
+    current_offset_x = 0
+
+    def on_touch_down(self, touch):
+        if touch.x < self.width / 2:
+            print("<-")
+            self.current_speed_x = self.SPEED_X
+        else:
+            print("->")
+            self.current_speed_x = -self.SPEED_X 
+
+    def on_touch_up(self, touch):
+        print("UP")
+        self.current_speed_x = 0
+```
+
+https://youtu.be/l8Imtec4ReQ?t=13455
+
+Aggiungiamo queste due funzioni per gestire il cambio di velocità ed il suo azzeramento quando si solleva il click del mouse nella zona sinistra e destra della schermata. Manca la gestione della pressione del pulsante della tastiera.
+
+### Keyboard
+
+Dobbiamo aggiungere la gestione della tastiera. Dopo una breve ricerca su google aggiungiamo il codice alla fine dell'*init*. 
+
+```python
+# main.py
+from kivy.core.window import Window
+
+    def __init__(self, **kwargs):
+        super(MainWidget, self).__init__(**kwargs)
+        #self.bind(pos=self.update_perspective_point) #creato da copilot
+        print("INIT W:" + str(self.width)+ " H:" + str(self.height))
+        self.init_vertical_lines()
+        self.init_horizontal_lines()
+        
+        self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
+        self._keyboard.bind(on_key_down=self._on_keyboard_down)
+        
+        Clock.schedule_interval(self.update, 1.0 / 60.0)
+
+    def keyboard_closed(self):
+        self.keyboard.unbind(on_key_down=self.on_keyboard_down)
+        self.keyboard.unbind(on_key_up=self.on_keyboard_up)
+        self.keyboard = None
+
+# vicino on_touch_down e prendiamo proprio il codice di queste funzioni
+def on_keyboard_down(self, keyboard, keycode, text, modifiers):
+        if keycode[1] == 'left':
+            self.current_speed_x = self.SPEED_X
+        elif keycode[1] == 'right':
+            self.current_speed_x = -self.SPEED_X
+        
+        return True
+    
+def on_keyboard_up(self, keyboard, keycode):
+        self.current_speed_x = 0
+        return True
+```
