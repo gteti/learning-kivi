@@ -2,13 +2,14 @@ from kivy.config import Config
 Config.set('graphics', 'width', '900')
 Config.set('graphics', 'height', '400')
 
+from kivy import platform
+from kivy.core.window import Window
 from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.properties import NumericProperty, Clock
 from kivy.graphics.context_instructions import Color
 from kivy.graphics.vertex_instructions import Line
 
-from kivy.core.window import Window
 
 class MainWidget(Widget):
     perspective_point_x = NumericProperty(0)
@@ -37,9 +38,10 @@ class MainWidget(Widget):
         self.init_vertical_lines()
         self.init_horizontal_lines()
         
-        self.keyboard = Window.request_keyboard(self.keyboard_closed, self)
-        self.keyboard.bind(on_key_down=self.on_keyboard_down)
-        self.keyboard.bind(on_key_up=self.on_keyboard_up)
+        if self.is_desktop():
+            self.keyboard = Window.request_keyboard(self.keyboard_closed, self)
+            self.keyboard.bind(on_key_down=self.on_keyboard_down)
+            self.keyboard.bind(on_key_up=self.on_keyboard_up)
         
         Clock.schedule_interval(self.update, 1.0 / 60.0)
 
@@ -47,6 +49,13 @@ class MainWidget(Widget):
         self.keyboard.unbind(on_key_down=self.on_keyboard_down)
         self.keyboard.unbind(on_key_up=self.on_keyboard_up)
         self.keyboard = None
+    
+    def is_desktop(self):
+        print("Platform: ",platform)
+        if platform in ('linux', 'win', 'macosx'):
+            print("Platform: ",platform)
+            return True
+        return False
 
     def on_parent(self, widget, parent):
         print("PARENT W:" + str(self.width)+ " H:" + str(self.height))
@@ -167,11 +176,11 @@ class MainWidget(Widget):
             #print("<-")
             self.current_speed_x = self.SPEED_X
         else:
-            print("->")
+            #print("->")
             self.current_speed_x = -self.SPEED_X 
 
     def on_touch_up(self, touch):
-        print("UP")
+        #print("UP")
         self.current_speed_x = 0
 
         

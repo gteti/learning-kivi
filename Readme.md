@@ -1360,6 +1360,11 @@ Dobbiamo aggiungere la gestione della tastiera. Dopo una breve ricerca su google
 # main.py
 from kivy.core.window import Window
 
+    
+    SPEED_X = 12 #3
+    current_speed_x = 0
+    current_offset_x = 0
+
     def __init__(self, **kwargs):
         super(MainWidget, self).__init__(**kwargs)
         #self.bind(pos=self.update_perspective_point) #creato da copilot
@@ -1390,3 +1395,42 @@ def on_keyboard_up(self, keyboard, keycode):
         self.current_speed_x = 0
         return True
 ```
+
+Abbiamo un problema relativo alla posizione del punto di partenza delle mie linee. Il posizionamento dell'import di **Window** va spostato prima dell'import di **App** ma dopo il set della dimensione della finestra.
+
+Non vogliamo la definizione della tastiera quando utilizziamo l'applicazione da dispositivo mobile. Definiamo quindi una funzione che ci dirà su quale dispositivo stiamo lavorando.
+
+```python
+# main.py
+from kivy import platform
+
+    def __init__(self, **kwargs):
+        super(MainWidget, self).__init__(**kwargs)
+        #self.bind(pos=self.update_perspective_point) #creato da copilot
+        print("INIT W:" + str(self.width)+ " H:" + str(self.height))
+        self.init_vertical_lines()
+        self.init_horizontal_lines()
+        
+        if self.is_desktop():
+            self.keyboard = Window.request_keyboard(self.keyboard_closed, self)
+            self.keyboard.bind(on_key_down=self.on_keyboard_down)
+            self.keyboard.bind(on_key_up=self.on_keyboard_up)
+        
+        Clock.schedule_interval(self.update, 1.0 / 60.0)
+        
+    def keyboard_closed(self):
+        self.keyboard.unbind(on_key_down=self.on_keyboard_down)
+        self.keyboard.unbind(on_key_up=self.on_keyboard_up)
+        self.keyboard = None
+    
+    def is_desktop(self):
+        print("Platform: ",platform)
+        if platform in ('linux', 'win', 'macosx'):
+            print("Platform: ",platform)
+            return True
+        return False
+
+```
+
+
+https://youtu.be/l8Imtec4ReQ?t=14041
