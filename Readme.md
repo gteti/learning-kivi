@@ -1417,14 +1417,13 @@ from kivy import platform
             self.keyboard.bind(on_key_up=self.on_keyboard_up)
         
         Clock.schedule_interval(self.update, 1.0 / 60.0)
-        
+
     def keyboard_closed(self):
         self.keyboard.unbind(on_key_down=self.on_keyboard_down)
         self.keyboard.unbind(on_key_up=self.on_keyboard_up)
         self.keyboard = None
     
     def is_desktop(self):
-        print("Platform: ",platform)
         if platform in ('linux', 'win', 'macosx'):
             print("Platform: ",platform)
             return True
@@ -1434,3 +1433,114 @@ from kivy import platform
 
 
 https://youtu.be/l8Imtec4ReQ?t=14041
+
+## GALAXY - V2
+
+Alla fine di questa versione 2 il progetto avrà la navicella che si muove sulle linee precedentemente disegnate e possiamo spostarla a destra o sinistra. 
+Lo spostamento oltre il percorso segnato, genererà un messaggio di "GAME OVER" ma non bloccherà l'esecuzione del programma ad una velocità ridotta.
+In questa sezione ci occuperemo di:
+- Structure/organize our code
+- Display the path "Tiles"
+- Land generation algorithm
+- Display ship
+- Collisions (Game over)
+
+### Structure/organize our code
+Prima di qualsiasi altra cosa, dobbiamo organizzare e pulire il nostro codice. Prendiamo il codice della parte relativa al *transform* e lo inseriremo in un apposito file denominato **transforms.py**.
+
+```python
+# transforms.py
+def transform(self, x, y):
+
+        #return self.transform_2D(x, y)
+        return self.transform_perspective(x, y)
+
+    def transform_2D(self, x, y):
+        return int(x), int(y)
+
+    def transform_perspective(self, x, y):
+        '''
+        tr_y = y * self.perspective_point_y / self.height
+        if tr_y > self.perspective_point_y:
+            tr_y = self.perspective_point_y
+        
+        diff_x = x - self.perspective_point_x
+        diff_y = self.perspective_point_y - tr_y
+        proportion_y = diff_y / self.perspective_point_y # 1 when diff_y == self.perspective_point_y or 0 when diff_y == 0 
+
+        tr_x = self.perspective_point_x + diff_x * proportion_y
+        '''
+
+        lin_y = y * self.perspective_point_y / self.height
+        if lin_y > self.perspective_point_y:
+            lin_y = self.perspective_point_y
+        
+        diff_x = x - self.perspective_point_x
+        diff_y = self.perspective_point_y - lin_y
+        factor_y = diff_y / self.perspective_point_y # 1 when diff_y == self.perspective_point_y or 0 when diff_y == 0 
+
+        factor_y = factor_y * factor_y
+
+        tr_x = self.perspective_point_x + diff_x * factor_y
+        tr_y = self.perspective_point_y - factor_y * self.perspective_point_y # perspective_point_y is the maximum height
+        
+        return int(tr_x), int(tr_y)
+
+# main.py
+class MainWidget(Widget):
+    from transforms import transform, transform_2D, transform_perspective
+```
+
+Dopo questa modifica lanciando il programma *main.py* non dovremmo notare modifiche al corretto funzionamento sviluppato fino a questo punto.
+Aggiungiamo anche un file denominato **user_actions.py** che conterrà il *binding* della tastiera e il *touch* della finestra.
+
+```python
+# user_actions.py
+def keyboard_closed(self):
+    self.keyboard.unbind(on_key_down=self.on_keyboard_down)
+    self.keyboard.unbind(on_key_up=self.on_keyboard_up)
+    self.keyboard = None
+
+def on_keyboard_down(self, keyboard, keycode, text, modifiers):
+    if keycode[1] == 'left':
+        self.current_speed_x = self.SPEED_X
+    elif keycode[1] == 'right':
+        self.current_speed_x = -self.SPEED_X
+    
+    return True
+
+def on_keyboard_up(self, keyboard, keycode):
+    self.current_speed_x = 0
+    return True
+
+def on_touch_down(self, touch):
+    if touch.x < self.width / 2:
+        #print("<-")
+        self.current_speed_x = self.SPEED_X
+    else:
+        #print("->")
+        self.current_speed_x = -self.SPEED_X 
+
+def on_touch_up(self, touch):
+    #print("UP")
+    self.current_speed_x = 0
+
+# main.py
+class MainWidget(Widget):
+    from transforms import transform, transform_2D, transform_perspective
+    from user_actions import keyboard_closed, on_keyboard_down, on_keyboard_up, on_touch_down, on_touch_move, on_touch_up
+    
+```
+
+Il funzionamento è ancora garantito nonostante lo spostamento del codice.
+
+Cancelliamo inoltre **on_parent**, **on_size** e **on_perspective_point_x** insieme a **on_perspective_point_y** che non utilizziamo più nel **main.py**.
+
+
+### Display the path "Tiles"
+
+### Land generation algorithm
+
+### Display ship
+
+### Collisions (Game over)
