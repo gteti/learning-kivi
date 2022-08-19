@@ -1602,7 +1602,7 @@ def get_line_y_from_index(self, index):
     line_y = index * spacing_y - self.current_offset_y
 
     return line_y
-    
+
 def update_horizontal_lines(self):
     start_index = -int(self.V_NB_LINES/2)+1 # half number of lines
     end_index = start_index + self.V_NB_LINES -1
@@ -1617,6 +1617,45 @@ def update_horizontal_lines(self):
 ```
 
 #### Display a tile
+https://youtu.be/l8Imtec4ReQ?t=14851
+Dobbiamo visualizzare la prima cella percorribile di colore bianco. Per fare questo dobbiamo prima definire la *get_tile_coordinates(self, ti_x, ti_y)* che restituisce le coordinate della cella. Lasceremo il concetto di rettangolo per la creazione della cella e passeremo a quello di trapezio o figura quadrangolare perché il primo usa la lunghezza e larghezza per disegnare. Questa funzione restituirà le coordinate x,y calcolate con un ingresso nel range (0,0) e (1,1) che saranno i 4 punti da dare al trapezio. I punti da assegnare corrisponderanno alle coordinate a partire dall'angolo in basso a sinistra in senso orario i restanti fino a 4. Dopo l'assegnazione di questi punti chiameremo la funzione *transform*.
+
+```python
+# main.py
+ def __init__(self, **kwargs):
+    super(MainWidget, self).__init__(**kwargs)
+    print("INIT W:" + str(self.width)+ " H:" + str(self.height))
+    self.init_vertical_lines()
+    self.init_horizontal_lines()
+    self.init_tiles() # aggiunta
+
+def init_tiles(self):
+    with self.canvas:
+        Color(1, 1, 1)
+        self.tile = Quad()
+
+def update_tiles(self):
+        xmin, ymin = self.get_tile_coordinates(self.ti_x, self.ti_y)
+        xmax, ymax = self.get_tile_coordinates(self.ti_x+1, self.ti_y+1)
+        
+        x1, y1 = self.transform(xmin, ymin)
+        x2, y2 = self.transform(xmin, ymax)
+        x3, y3 = self.transform(xmax, ymax)
+        x4, y4 = self.transform(xmax, ymin)
+
+        self.tile.points = [x1, y1, x2, y2, x3, y3, x4, y4]
+
+def update(self, dt):
+    time_factor = dt * 60
+    self.update_vertical_lines()
+    self.update_horizontal_lines()
+    self.update_tiles()     # aggiunta
+```
+
+Vediamo che così visualizziamo un rettangolo bianco nella posizione desiderata. Riattiviamo la modalità *perspective* nel *transforms.py* e vediamo se il comportamento risulta ancora corretto.
+
+#### Move the tile
+https://youtu.be/l8Imtec4ReQ?t=15213
 
 ### Land generation algorithm
 
