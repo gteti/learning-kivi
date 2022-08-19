@@ -1656,6 +1656,66 @@ Vediamo che così visualizziamo un rettangolo bianco nella posizione desiderata.
 
 #### Move the tile
 https://youtu.be/l8Imtec4ReQ?t=15213
+Dobbiamo riattivare l'animazione nella funzione *update* per il *self.current_offset_y* decommentando.
+
+```python
+# main.py
+class MainWidget(Widget):
+    SPEED = 1
+
+    def update(self, dt):
+        time_factor = dt * 60
+        self.update_vertical_lines()
+        self.update_horizontal_lines()
+        self.update_tiles()
+        self.current_offset_y += self.SPEED * time_factor
+```
+
+La cella bianca generata sembra andare avanti un attimo che genera una specie di loop, che avevamo generato precedentemente. Useremo questo loop per muovere la cella bianca verso il basso per dare l'idea di un movimento.
+
+```python
+# main.py
+class MainWidget(Widget):
+    current_y_loop = 0
+
+    def get_tile_coordinates(self, ti_x, ti_y):
+        ti_y = ti_y - self.current_y_loop # aggiunta
+
+    def update(self, dt):
+        #print("update")
+        time_factor = dt * 60
+        self.update_vertical_lines()
+        self.update_horizontal_lines()
+        self.update_tiles()
+        self.current_offset_y += self.SPEED * time_factor
+        spacing_y = self.H_LINES_SPACING * self.height
+        if self.current_offset_y >= spacing_y:
+            #self.current_offset_y = 0
+            self.current_offset_y -= spacing_y
+            self.current_y_loop += 1 # aggiunta
+```
+
+#### Display several tiles
+https://youtu.be/l8Imtec4ReQ?t=15384
+Aggiungiamo il codice per visualizzare più celle. L'attributo che gestisce le celle diventerà una lista. Per ora disegniamo una riga al centro e cambiamo la funzione *init* affinché cicli fra le celle. Dobbiamo anche aggiornare la funzione *update* perché deve lavorare con le *tiles_coordinate*.
+
+```python
+# main.py
+class MainWidget(Widget):
+    NB_TILES = 4  # codice cambiato
+    tiles = []
+    tiles_coordinates = []
+
+    def __init__(self, **kwargs):
+     
+        self.generate_tiles_coordinates() # aggiunta
+
+    def generate_tiles_coordinates(self):
+        for i in range (0,self.NB_TILES):
+            self.tiles_coordinates.append((0,i))
+```
+#### Tiles: infinite generation
+https://youtu.be/l8Imtec4ReQ?t=15638
 
 ### Land generation algorithm
 

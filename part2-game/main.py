@@ -27,15 +27,16 @@ class MainWidget(Widget):
     horizontal_lines = []
 
     current_offset_y = 0
-    SPEED = 2
+    SPEED = 1
+    current_y_loop = 0
 
     SPEED_X = 12 #3
     current_speed_x = 0
     current_offset_x = 0
 
-    tile = None
-    ti_x = 0
-    ti_y = 0
+    NB_TILES = 4
+    tiles = []
+    tiles_coordinates = []
 
     def __init__(self, **kwargs):
         super(MainWidget, self).__init__(**kwargs)
@@ -44,6 +45,7 @@ class MainWidget(Widget):
         self.init_vertical_lines()
         self.init_horizontal_lines()
         self.init_tiles()
+        self.generate_tiles_coordinates()
         
         if self.is_desktop():
             self.keyboard = Window.request_keyboard(self.keyboard_closed, self)
@@ -81,7 +83,12 @@ class MainWidget(Widget):
     def init_tiles(self):
         with self.canvas:
             Color(1, 1, 1)
-            self.tile = Quad()
+            for i in range (0,self.NB_TILES):
+                self.tiles.append(Quad())
+
+    def generate_tiles_coordinates(self):
+        for i in range (0,self.NB_TILES):
+            self.tiles_coordinates.append((0,i))
 
     def init_vertical_lines(self):
         with self.canvas:
@@ -105,21 +112,27 @@ class MainWidget(Widget):
         return line_y
 
     def get_tile_coordinates(self, ti_x, ti_y):
+        ti_y = ti_y - self.current_y_loop
+
         x = self.get_line_x_from_index(ti_x)
         y = self.get_line_y_from_index(ti_y)
 
         return x,y
 
     def update_tiles(self):
-        xmin, ymin = self.get_tile_coordinates(self.ti_x, self.ti_y)
-        xmax, ymax = self.get_tile_coordinates(self.ti_x+1, self.ti_y+1)
-        
-        x1, y1 = self.transform(xmin, ymin)
-        x2, y2 = self.transform(xmin, ymax)
-        x3, y3 = self.transform(xmax, ymax)
-        x4, y4 = self.transform(xmax, ymin)
+        for i in range(0,self.NB_TILES):
+            tile = self.tiles[i]
+            tile_coordinates = self.tiles_coordinates[i]
+            #xmin, ymin = self.get_tile_coordinates(self.ti_x, self.ti_y)
+            xmin, ymin = self.get_tile_coordinates(tile_coordinates[0], tile_coordinates[1])
+            xmax, ymax = self.get_tile_coordinates(tile_coordinates[0]+1, tile_coordinates[1]+1)
+            
+            x1, y1 = self.transform(xmin, ymin)
+            x2, y2 = self.transform(xmin, ymax)
+            x3, y3 = self.transform(xmax, ymax)
+            x4, y4 = self.transform(xmax, ymin)
 
-        self.tile.points = [x1, y1, x2, y2, x3, y3, x4, y4]
+            tile.points = [x1, y1, x2, y2, x3, y3, x4, y4]
 
     def update_vertical_lines(self):
         #central_line_x = int(self.width / 2)
@@ -173,10 +186,12 @@ class MainWidget(Widget):
         self.update_vertical_lines()
         self.update_horizontal_lines()
         self.update_tiles()
-        #self.current_offset_y += self.SPEED * time_factor
+        self.current_offset_y += self.SPEED * time_factor
         spacing_y = self.H_LINES_SPACING * self.height
         if self.current_offset_y >= spacing_y:
-            self.current_offset_y = 0
+            #self.current_offset_y = 0
+            self.current_offset_y -= spacing_y
+            self.current_y_loop += 1
 
         # self.current_offset_x += self.SPEED_X * time_factor
         #self.current_offset_x += self.current_speed_x * time_factor
