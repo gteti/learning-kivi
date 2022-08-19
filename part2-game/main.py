@@ -87,6 +87,12 @@ class MainWidget(Widget):
         line_x = central_line_x + offset * spacing + self.current_offset_x
 
         return line_x
+    
+    def get_line_y_from_index(self, index):
+        spacing_y = self.H_LINES_SPACING * self.height
+        line_y = index * spacing_y - self.current_offset_y
+
+        return line_y
 
     def update_vertical_lines(self):
         #central_line_x = int(self.width / 2)
@@ -119,15 +125,15 @@ class MainWidget(Widget):
         #xmin = central_line_x + offset * spacing + self.current_offset_x
         #xmax = central_line_x - offset * spacing + self.current_offset_x
 
-        start_index = -int(self.H_NB_LINES/2)+1 # half number of lines
+        start_index = -int(self.V_NB_LINES/2)+1 # half number of lines
         end_index = start_index + self.V_NB_LINES -1
         xmin = self.get_line_x_from_index(start_index)
         xmax = self.get_line_x_from_index(end_index)
-        spacing_y = self.H_LINES_SPACING * self.height
+        #spacing_y = self.H_LINES_SPACING * self.height
 
         for i in range(0,self.H_NB_LINES):
-            line_y = i * spacing_y - self.current_offset_y
-        
+            #line_y = i * spacing_y - self.current_offset_y
+            line_y = self.get_line_y_from_index(i)
             x1, y1 = self.transform(xmin, line_y)
             x2, y2 = self.transform(xmax, line_y)
             #self.vertical_lines[i].points = [line_x, 0, line_x, self.height]

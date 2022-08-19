@@ -1593,12 +1593,31 @@ def transform(self, x, y):
 ```
 
 Abbiamo anche commentato il calcolo di *self.current_offset_y* e *self.current_offset_x* dal **main.py** nella funzione update. Riduciamo anche le **V_NB_LINES** a 4 e anche  **V_LINES_SPACING** a .1.
-Implementiamo ora *get_line_y_from_index(self, index)*.
+Implementiamo ora *get_line_y_from_index(self, index)* che aggiornerà anche la funzione *update_horizontal_lines*.
 
 ```python
 #main.py
+def get_line_y_from_index(self, index):
+    spacing_y = self.H_LINES_SPACING * self.height
+    line_y = index * spacing_y - self.current_offset_y
 
+    return line_y
+    
+def update_horizontal_lines(self):
+    start_index = -int(self.V_NB_LINES/2)+1 # half number of lines
+    end_index = start_index + self.V_NB_LINES -1
+    xmin = self.get_line_x_from_index(start_index)
+    xmax = self.get_line_x_from_index(end_index)
+
+    for i in range(0,self.H_NB_LINES):
+        line_y = self.get_line_y_from_index(i)
+        x1, y1 = self.transform(xmin, line_y)
+        x2, y2 = self.transform(xmax, line_y)
+        self.horizontal_lines[i].points = [x1, y1, x2, y2] 
 ```
+
+#### Display a tile
+
 ### Land generation algorithm
 
 ### Display ship
