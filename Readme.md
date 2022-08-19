@@ -1536,9 +1536,69 @@ Il funzionamento è ancora garantito nonostante lo spostamento del codice.
 
 Cancelliamo inoltre **on_parent**, **on_size** e **on_perspective_point_x** insieme a **on_perspective_point_y** che non utilizziamo più nel **main.py**.
 
-
 ### Display the path "Tiles"
 
+https://youtu.be/l8Imtec4ReQ?t=14264
+Vogliamo mostrare le linee bianche del percorso da seguire. Definiamo le posizioni delle celle come (0,0) dove il primo numero, partendo dal centro, indica la cella sulla riga. Quindi la centrale sarà (0,0), alla sua sinistra (-1,0) e alla sua destra (1,0). La cella centrale sulla colonna centrale è la (0,1) e così via. Definiamo queste posizioni come **(ti_x, ti_y)** e può aver senso avere una funzione *get_tile_coordinates(self, ti_x, ti_ y)*. Il punto di partenza è definito nel vertice in basso a destra della cella da disegnare. 
+La numerazione per le linee orizzontali sarà crescente dal basso verso l'alto. Definiremo anche *get_line_x_from_index(self, index)* per ottenere la posizione della linea relativamente alla componente X. Useremo questa funzione per il calcolo di *update_vertical_lines* e *update_horizontal_lines*.
+
+```python
+# main.py
+def get_line_x_from_index(self, index):
+    central_line_x = self.perspective_point_x
+    spacing = self.V_LINES_SPACING * self.width
+    offset = index - 0.5
+    line_x = central_line_x + offset * spacing + self.current_offset_x
+
+    return line_x
+
+def update_vertical_lines(self):
+    start_index = -int(self.V_NB_LINES/2)+1 # half number of lines
+    for i in range(start_index, start_index + self.V_NB_LINES): 
+        line_x = self.get_line_x_from_index(i)
+        x1, y1 = self.transform(line_x, 0)
+        x2, y2 = self.transform(line_x, self.height)
+        self.vertical_lines[i].points = [x1, y1, x2, y2]
+
+def update(self, dt):
+    time_factor = dt * 60
+    self.update_vertical_lines()
+    self.update_horizontal_lines()
+    #self.current_offset_y += self.SPEED * time_factor
+    spacing_y = self.H_LINES_SPACING * self.height
+    if self.current_offset_y >= spacing_y:
+        self.current_offset_y = 0
+
+
+    #self.current_offset_x += self.current_speed_x * time_factor
+            
+def update_horizontal_lines(self):
+        #central_line_x = int(self.width / 2)
+        #spacing = self.V_LINES_SPACING * self.width
+        #offset = -int(self.V_NB_LINES / 2) + 0.5
+
+        #xmin = central_line_x + offset * spacing + self.current_offset_x
+        #xmax = central_line_x - offset * spacing + self.current_offset_x
+
+        start_index = -int(self.H_NB_LINES/2)+1 # half number of lines
+        end_index = start_index + self.V_NB_LINES -1
+        xmin = self.get_line_x_from_index(start_index)
+        xmax = self.get_line_x_from_index(end_index)
+
+# transforms.py
+def transform(self, x, y):
+    return self.transform_2D(x, y)
+
+
+```
+
+Abbiamo anche commentato il calcolo di *self.current_offset_y* e *self.current_offset_x* dal **main.py** nella funzione update. Riduciamo anche le **V_NB_LINES** a 4 e anche  **V_LINES_SPACING** a .1.
+Implementiamo ora *get_line_y_from_index(self, index)*.
+
+```python
+#main.py
+
+```
 ### Land generation algorithm
 
 ### Display ship

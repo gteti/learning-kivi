@@ -18,8 +18,8 @@ class MainWidget(Widget):
     perspective_point_y = NumericProperty(0)
 
     #line = None
-    V_NB_LINES = 10
-    V_LINES_SPACING = .25 # percentage in screen width
+    V_NB_LINES = 4 #10
+    V_LINES_SPACING = .1 #.25 # percentage in screen width
     vertical_lines = []
     
     H_NB_LINES = 15
@@ -80,21 +80,30 @@ class MainWidget(Widget):
             for i in range(0,self.V_NB_LINES):
                 self.vertical_lines.append(Line())
 
-    def update_vertical_lines(self):
-        central_line_x = int(self.width / 2)
+    def get_line_x_from_index(self, index):
+        central_line_x = self.perspective_point_x
         spacing = self.V_LINES_SPACING * self.width
-        #self.line.points = [central_line_x, 0, central_line_x, 100]
-        offset = -int(self.V_NB_LINES / 2) + 0.5
+        offset = index - 0.5
+        line_x = central_line_x + offset * spacing + self.current_offset_x
 
-        for i in range(0,self.V_NB_LINES):
-            line_x = int(central_line_x + offset * spacing + self.current_offset_x)
+        return line_x
 
+    def update_vertical_lines(self):
+        #central_line_x = int(self.width / 2)
+        #spacing = self.V_LINES_SPACING * self.width
+        ##self.line.points = [central_line_x, 0, central_line_x, 100]
+        #offset = -int(self.V_NB_LINES / 2) + 0.5
+
+        start_index = -int(self.V_NB_LINES/2)+1 # half number of lines
+        for i in range(start_index, start_index + self.V_NB_LINES): #(0,self.V_NB_LINES):
+            #line_x = int(central_line_x + offset * spacing + self.current_offset_x)
+            line_x = self.get_line_x_from_index(i)
             x1, y1 = self.transform(line_x, 0)
             x2, y2 = self.transform(line_x, self.height)
             #self.vertical_lines[i].points = [line_x, 0, line_x, self.height]
             self.vertical_lines[i].points = [x1, y1, x2, y2]
 
-            offset += 1 
+            #offset += 1 
 
     def init_horizontal_lines(self):
         with self.canvas:
@@ -103,13 +112,17 @@ class MainWidget(Widget):
                 self.horizontal_lines.append(Line())
 
     def update_horizontal_lines(self):
-        central_line_x = int(self.width / 2)
-        spacing = self.V_LINES_SPACING * self.width
-        offset = -int(self.V_NB_LINES / 2) + 0.5
+        #central_line_x = int(self.width / 2)
+        #spacing = self.V_LINES_SPACING * self.width
+        #offset = -int(self.V_NB_LINES / 2) + 0.5
 
-        xmin = central_line_x + offset * spacing + self.current_offset_x
-        xmax = central_line_x - offset * spacing + self.current_offset_x
+        #xmin = central_line_x + offset * spacing + self.current_offset_x
+        #xmax = central_line_x - offset * spacing + self.current_offset_x
 
+        start_index = -int(self.H_NB_LINES/2)+1 # half number of lines
+        end_index = start_index + self.V_NB_LINES -1
+        xmin = self.get_line_x_from_index(start_index)
+        xmax = self.get_line_x_from_index(end_index)
         spacing_y = self.H_LINES_SPACING * self.height
 
         for i in range(0,self.H_NB_LINES):
@@ -126,13 +139,13 @@ class MainWidget(Widget):
         time_factor = dt * 60
         self.update_vertical_lines()
         self.update_horizontal_lines()
-        self.current_offset_y += self.SPEED * time_factor
+        #self.current_offset_y += self.SPEED * time_factor
         spacing_y = self.H_LINES_SPACING * self.height
         if self.current_offset_y >= spacing_y:
             self.current_offset_y = 0
 
         # self.current_offset_x += self.SPEED_X * time_factor
-        self.current_offset_x += self.current_speed_x * time_factor
+        #self.current_offset_x += self.current_speed_x * time_factor
             
 
 class GalaxyApp(App):
