@@ -27,14 +27,14 @@ class MainWidget(Widget):
     horizontal_lines = []
 
     current_offset_y = 0
-    SPEED = 1
+    SPEED = 4
     current_y_loop = 0
 
     SPEED_X = 12 #3
     current_speed_x = 0
     current_offset_x = 0
 
-    NB_TILES = 4
+    NB_TILES = 8
     tiles = []
     tiles_coordinates = []
 
@@ -87,7 +87,7 @@ class MainWidget(Widget):
                 self.tiles.append(Quad())
 
     def generate_tiles_coordinates(self):
-        
+        last_x = 0
         last_y = 0
         # clean the coordinates that are out of the screen
         # ti_y < self.current_y_loop
@@ -97,11 +97,18 @@ class MainWidget(Widget):
         
         if (len(self.tiles_coordinates) > 0):
             last_coordinates = self.tiles_coordinates[-1]
+            last_x = last_coordinates[0]
             last_y = last_coordinates[1] +1
 
         for i in range(len(self.tiles_coordinates),self.NB_TILES): #(0,self.NB_TILES):
-            r = random.randint(-1,1)
-            self.tiles_coordinates.append((r,last_y)) #0,last_y)) #i))
+            r = random.randint(0,2) # 0 = straight, 1 = left, 2 = right
+            self.tiles_coordinates.append((last_x, last_y)) #r,last_y)) #0,last_y)) #i))
+            if (r==1):
+                last_x += 1
+                self.tiles_coordinates.append((last_x, last_y)) #r,last_y)) #0,last_y)) #i))
+            if (r==2):
+                last_x -= 1
+                self.tiles_coordinates.append((last_x, last_y))
             last_y += 1
 
     def init_vertical_lines(self):
