@@ -9,7 +9,7 @@ from kivy.uix.widget import Widget
 from kivy.properties import NumericProperty, Clock
 from kivy.graphics.context_instructions import Color
 from kivy.graphics.vertex_instructions import Line, Quad
-
+import random
 
 class MainWidget(Widget):
     from transforms import transform, transform_2D, transform_perspective
@@ -87,8 +87,22 @@ class MainWidget(Widget):
                 self.tiles.append(Quad())
 
     def generate_tiles_coordinates(self):
-        for i in range (0,self.NB_TILES):
-            self.tiles_coordinates.append((0,i))
+        
+        last_y = 0
+        # clean the coordinates that are out of the screen
+        # ti_y < self.current_y_loop
+        for i in range(len(self.tiles_coordinates)-1,-1,-1): # -1 as final because we want to reach 0 and operate on it
+            if self.tiles_coordinates[i][1] < self.current_y_loop:
+                del self.tiles_coordinates[i]
+        
+        if (len(self.tiles_coordinates) > 0):
+            last_coordinates = self.tiles_coordinates[-1]
+            last_y = last_coordinates[1] +1
+
+        for i in range(len(self.tiles_coordinates),self.NB_TILES): #(0,self.NB_TILES):
+            r = random.randint(-1,1)
+            self.tiles_coordinates.append((r,last_y)) #0,last_y)) #i))
+            last_y += 1
 
     def init_vertical_lines(self):
         with self.canvas:
@@ -192,6 +206,7 @@ class MainWidget(Widget):
             #self.current_offset_y = 0
             self.current_offset_y -= spacing_y
             self.current_y_loop += 1
+            self.generate_tiles_coordinates()
 
         # self.current_offset_x += self.SPEED_X * time_factor
         #self.current_offset_x += self.current_speed_x * time_factor

@@ -1716,6 +1716,55 @@ class MainWidget(Widget):
 ```
 #### Tiles: infinite generation
 https://youtu.be/l8Imtec4ReQ?t=15638
+Aumentiamo la generazione di celle bianche. Per fare questo liberiamo dalla variabile *tiles* quelle che sono già uscite dallo schermo così che nuove celle possanno essere create. Controlleremo il valore del *current_y_loop* e chiameremo la generazione di nuove *tiles* quando *ti_y < self.current_y_loop* e questo comporta anche la modifica del codice relativo alla generazione delle celle, *generate_tiles_coordinates* di modo da poter richiamare questa funzione oltre che nell'*init* anche in altre parti del codice.
+
+```python
+# main.py
+class MainWidget(Widget):
+    NB_TILES = 4
+    
+    def generate_tiles_coordinates(self):
+        
+        last_y = 0
+        # clean the coordinates that are out of the screen
+        # ti_y < self.current_y_loop
+        for i in range(len(self.tiles_coordinates)-1,-1,-1): # -1 as final because we want to reach 0 and operate on it
+            if self.tiles_coordinates[i][1] < self.current_y_loop:
+                del self.tiles_coordinates[i]
+        
+        if (len(self.tiles_coordinates) > 0):
+            last_coordinates = self.tiles_coordinates[-1]
+            last_y = last_coordinates[1] +1
+            
+        for i in range(len(self.tiles_coordinates),self.NB_TILES): #(0,self.NB_TILES):
+            self.tiles_coordinates.append((0,last_y))#i))
+            last_y += 1
+    def update(self, dt):
+        #print("update")
+        time_factor = dt * 60
+        self.update_vertical_lines()
+        self.update_horizontal_lines()
+        self.update_tiles()
+        self.current_offset_y += self.SPEED * time_factor
+        spacing_y = self.H_LINES_SPACING * self.height
+        if self.current_offset_y >= spacing_y:
+            #self.current_offset_y = 0
+            self.current_offset_y -= spacing_y
+            self.current_y_loop += 1
+            self.generate_tiles_coordinates() # aggiunta
+```
+Possiamo vedere che una nuova cella viene creata automaticamente quando la cella bianca si sposta verso il basso e viene cancellata.
+
+#### Random land Generation
+https://youtu.be/l8Imtec4ReQ?t=16094
+Vogliamo realizzare un percorso casuale da percorrere con la navicella, un percorso di celle bianche. Dobbiamo stare attenti però che la casualità di generazione non aiuterà la generazione di un percorso da poter seguire. Dobbiamo aggiungere delle celle bianche di connessione fra le generazioni. 
+
+```python
+# main.py
+
+
+```
+
 
 ### Land generation algorithm
 
