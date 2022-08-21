@@ -1794,9 +1794,96 @@ class MainWidget(Widget):
 
 ```
 
-La generazione avviene a volte anche fuori dalle linee disegnate. E' una cosa da sistemare.
+La generazione avviene a volte anche fuori dalle linee disegnate. E' una cosa da sistemare che facciamo aggiustando il codice. Aggiungiamo anche il codice che all'avvio crei una linea di 10 celle bianche centrali.
 
-https://youtu.be/l8Imtec4ReQ?t=16459
+```python
+# main.py
+     def __init__(self, **kwargs):
+        super(MainWidget, self).__init__(**kwargs)
+        self.init_vertical_lines()
+        self.init_horizontal_lines()
+        self.init_tiles()
+        self.pre_fill_tiles_coordinates()
+        self.generate_tiles_coordinates() # aggiunta
+        
+
+    def pre_fill_tiles_coordinates(self):
+        for i in range (0,10):
+            self.tiles_coordinates.append((0,i))
+
+    def generate_tiles_coordinates(self):
+        last_x = 0
+        last_y = 0
+        # clean the coordinates that are out of the screen
+        # ti_y < self.current_y_loop
+        for i in range(len(self.tiles_coordinates)-1,-1,-1): # -1 as final because we want to reach 0 and operate on it
+            if self.tiles_coordinates[i][1] < self.current_y_loop:
+                del self.tiles_coordinates[i]
+        
+        if (len(self.tiles_coordinates) > 0):
+            last_coordinates = self.tiles_coordinates[-1]
+            last_x = last_coordinates[0]
+            last_y = last_coordinates[1] +1
+
+        for i in range(len(self.tiles_coordinates),self.NB_TILES): #(0,self.NB_TILES):
+            r = random.randint(0,2) # 0 = straight, 1 = left, 2 = right
+            start_index = -int(self.V_NB_LINES/2) + 1  # aggiunta
+            end_index = start_index + self.V_NB_LINES - 1
+            if last_x <= start_index:
+                r = 1
+            elif last_x >= end_index:
+                r = 2
+            self.tiles_coordinates.append((last_x, last_y)) #r,last_y)) #0,last_y)) #i))
+            if (r==1):
+                last_x += 1
+                self.tiles_coordinates.append((last_x, last_y)) #r,last_y)) #0,last_y)) #i))
+            if (r==2):
+                last_x -= 1
+                self.tiles_coordinates.append((last_x, last_y))
+            last_y += 1
+
+```
+
+#### Display the Ship
+https://youtu.be/l8Imtec4ReQ?t=16732
+Aggiungiamo ora la visualizzazione della navicella sullo schermo. La navicella sarà un triangolo di colore nero che verrà visualizzato all'avvio al centro dello schermo. Per disegnarla avremo bisogno di 3 punti quanti i vertici del triangolo. SHIP_WIDTH e    SHIP_HEIGHT sono chiare dal loro nome, mentre SHIP_BASE_Y indica la posizione della navicella rispetto alla base del quadrilatero su cui è posizionata. Chiameremo la funzione *init_ship* dopo la funzione di *init_tiles* così che venga visualizzata sopra di queste. Invocheremo anche l'*update_ship* nella funzione di *update* dopo la chiamate di *update_tiles*.
+
+```python
+# main.py
+class MainWidget(Widget):
+    #...
+    ship = None
+    SHIP_WIDTH = .1
+    SHIP_HEIGHT = 0.035
+    SHIP_BASE_Y = 0.04
+
+    
+    def __init__(self, **kwargs):
+        # ..
+        self.init_tiles()
+        self.init_ship()    # aggiunta
+
+    def init_ship(self):
+        with self.canvas:
+            Color(0, 0, 0)
+            self.ship = Triangle()
+    
+    def update_ship(self):
+        center_x = self.width /2
+        base_y = self.SHIP_BASE_Y * self.height
+        ship_half_width = self.SHIP_WIDTH * self.width/2
+        ship_height = self.SHIP_HEIGHT * self.height
+        x1, y1 = self.transform(center_x - ship_half_width,base_y)
+        x2, y2 = self.transform(center_x, base_y + ship_height)
+        x3, y3 = self.transform(center_x + ship_half_width, base_y)
+        self.ship.points = [x1, y1, x2, y2, x3, y3]
+
+     def update(self, dt):
+        # ..
+        self.update_tiles()
+        self.update_ship()  # aggiunta
+
+```
 
 ### Land generation algorithm
 
