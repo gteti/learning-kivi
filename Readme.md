@@ -1616,7 +1616,7 @@ def update_horizontal_lines(self):
         self.horizontal_lines[i].points = [x1, y1, x2, y2] 
 ```
 
-#### Display a tile
+### Display a tile
 https://youtu.be/l8Imtec4ReQ?t=14851
 Dobbiamo visualizzare la prima cella percorribile di colore bianco. Per fare questo dobbiamo prima definire la *get_tile_coordinates(self, ti_x, ti_y)* che restituisce le coordinate della cella. Lasceremo il concetto di rettangolo per la creazione della cella e passeremo a quello di trapezio o figura quadrangolare perché il primo usa la lunghezza e larghezza per disegnare. Questa funzione restituirà le coordinate x,y calcolate con un ingresso nel range (0,0) e (1,1) che saranno i 4 punti da dare al trapezio. I punti da assegnare corrisponderanno alle coordinate a partire dall'angolo in basso a sinistra in senso orario i restanti fino a 4. Dopo l'assegnazione di questi punti chiameremo la funzione *transform*.
 
@@ -1654,7 +1654,7 @@ def update(self, dt):
 
 Vediamo che così visualizziamo un rettangolo bianco nella posizione desiderata. Riattiviamo la modalità *perspective* nel *transforms.py* e vediamo se il comportamento risulta ancora corretto.
 
-#### Move the tile
+### Move the tile
 https://youtu.be/l8Imtec4ReQ?t=15213
 Dobbiamo riattivare l'animazione nella funzione *update* per il *self.current_offset_y* decommentando.
 
@@ -1695,7 +1695,7 @@ class MainWidget(Widget):
             self.current_y_loop += 1 # aggiunta
 ```
 
-#### Display several tiles
+### Display several tiles
 https://youtu.be/l8Imtec4ReQ?t=15384
 Aggiungiamo il codice per visualizzare più celle. L'attributo che gestisce le celle diventerà una lista. Per ora disegniamo una riga al centro e cambiamo la funzione *init* affinché cicli fra le celle. Dobbiamo anche aggiornare la funzione *update* perché deve lavorare con le *tiles_coordinate*.
 
@@ -1714,7 +1714,7 @@ class MainWidget(Widget):
         for i in range (0,self.NB_TILES):
             self.tiles_coordinates.append((0,i))
 ```
-#### Tiles: infinite generation
+### Tiles: infinite generation
 https://youtu.be/l8Imtec4ReQ?t=15638
 Aumentiamo la generazione di celle bianche. Per fare questo liberiamo dalla variabile *tiles* quelle che sono già uscite dallo schermo così che nuove celle possanno essere create. Controlleremo il valore del *current_y_loop* e chiameremo la generazione di nuove *tiles* quando *ti_y < self.current_y_loop* e questo comporta anche la modifica del codice relativo alla generazione delle celle, *generate_tiles_coordinates* di modo da poter richiamare questa funzione oltre che nell'*init* anche in altre parti del codice.
 
@@ -1755,7 +1755,7 @@ class MainWidget(Widget):
 ```
 Possiamo vedere che una nuova cella viene creata automaticamente quando la cella bianca si sposta verso il basso e viene cancellata.
 
-#### Random land Generation
+### Random land Generation
 https://youtu.be/l8Imtec4ReQ?t=16094
 Vogliamo realizzare un percorso casuale da percorrere con la navicella, un percorso di celle bianche. Dobbiamo stare attenti però che la casualità di generazione non aiuterà la generazione di un percorso da poter seguire. Dobbiamo aggiungere delle celle bianche di connessione fra le generazioni. 
 
@@ -1844,7 +1844,7 @@ La generazione avviene a volte anche fuori dalle linee disegnate. E' una cosa da
 
 ```
 
-#### Display the Ship
+### Display the Ship
 https://youtu.be/l8Imtec4ReQ?t=16732
 Aggiungiamo ora la visualizzazione della navicella sullo schermo. La navicella sarà un triangolo di colore nero che verrà visualizzato all'avvio al centro dello schermo. Per disegnarla avremo bisogno di 3 punti quanti i vertici del triangolo. SHIP_WIDTH e    SHIP_HEIGHT sono chiare dal loro nome, mentre SHIP_BASE_Y indica la posizione della navicella rispetto alla base del quadrilatero su cui è posizionata. Chiameremo la funzione *init_ship* dopo la funzione di *init_tiles* così che venga visualizzata sopra di queste. Invocheremo anche l'*update_ship* nella funzione di *update* dopo la chiamate di *update_tiles*.
 
@@ -1885,7 +1885,28 @@ class MainWidget(Widget):
 
 ```
 
-### Land generation algorithm
+### Resize issue
+Se ridimensioniamo la finestra il gioco andrà più velocemente e se aumento la dimensione, la velocità rallenta. Bisogna investigare e risolvere questo problema e lasciare la velocità costante.
+La velocità del gioco è definita da *SPEED* che è la velocità sull'asse Y e da *SPEED_X* che è la velocità su X. I valori impostati per la velocità su Y, che servono poi per i calcoli delle linee, comportano che tale valore può essere "troppo grande" per schermi piccoli. Il viceversa è anche vero per schermi grandi. Dobbiamo utilizzare per questi calcoli la dimensione dello schermo come fattore di scala. Dobbiamo usare la stessa correzione per il calcolo su X.
+
+```python
+# main.py
+class MainWidget(Widget):
+    SPEED = .8 #4
+    SPEED_X = 3.0 
+
+    def update(self, dt):
+        # ... solo le modifiche
+        speed_y = self.SPEED * self.height / 100
+        self.current_offset_y += speed_y * time_factor  
+
+        speed_x = self.current_speed_x * self.width / 100
+        self.current_offset_x += speed_x * time_factor  
+```
+
+### Collisions
+https://youtu.be/l8Imtec4ReQ?t=17357
+Inizialmente visualizzeremo un messaggio quando la navicella andrà fuori dal percorso. 
 
 ### Display ship
 
