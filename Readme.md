@@ -1906,7 +1906,60 @@ class MainWidget(Widget):
 
 ### Collisions
 https://youtu.be/l8Imtec4ReQ?t=17357
-Inizialmente visualizzeremo un messaggio quando la navicella andrà fuori dal percorso. 
+Inizialmente visualizzeremo un messaggio quando la navicella andrà fuori dal percorso. Vogliamo realizzare un algoritmo che controlli che almeno uno dei vertici del triangolo sia sul percorso. Se tutti e 3 i vertici sono fuori dal percorso, allora la navicella è **Game Over** e visualizzeremo il messaggio sulla console. In un secondo tempo implementeremo il vero e proprio *Game Over*.
+
+```python
+# main.py
+class MainWidget(Widget):
+    # ...
+    tiles_coordinates = []
+
+    ship = None
+    SHIP_WIDTH = .1
+    SHIP_HEIGHT = 0.035
+    SHIP_BASE_Y = 0.04
+    ship_coordinates = [(0,0),(0,0),(0,0)]
+
+    def update_ship(self):
+        center_x = self.width /2
+        base_y = self.SHIP_BASE_Y * self.height
+        ship_half_width = self.SHIP_WIDTH * self.width/2
+        ship_height = self.SHIP_HEIGHT * self.height
+        
+        self.ship_coordinates[0] = (center_x - ship_half_width, base_y)
+        self.ship_coordinates[1] = (center_x, base_y + ship_height)
+        self.ship_coordinates[2] = (center_x + ship_half_width, base_y)
+
+        x1, y1 = self.transform(*self.ship_coordinates[0])
+        x2, y2 = self.transform(*self.ship_coordinates[1])
+        x3, y3 = self.transform(*self.ship_coordinates[2])
+        self.ship.points = [x1, y1, x2, y2, x3, y3]
+
+    def check_ship_collision(self):
+        for i in range(0, len(self.tiles_coordinates)):
+            ti_x, ti_y = self.tiles_coordinates[i]
+            if ti_y > self.current_y_loop + 1:
+                return False
+            if self.check_ship_collision_with_tile(ti_x, ti_y):
+                return True
+        return False
+
+    def check_ship_collision_with_tile(self, ti_x, ti_y):
+        xmin, ymin = self.get_tile_coordinates(ti_x, ti_y)
+        xmax, ymax = self.get_tile_coordinates(ti_x + 1, ti_y + 1)
+        for i in range(0,3):
+            px, py = self.ship_coordinates[i]
+            if xmin <= px <= xmax and ymin <= py <= ymax:
+                return True
+        
+        return False
+
+        def update(self, dt):
+            # ...
+        
+            if not self.check_ship_collision():
+                print("GAME OVER")
+```
 
 ### Display ship
 
