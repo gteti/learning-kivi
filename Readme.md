@@ -2006,6 +2006,48 @@ class MainWidget(Widget):
 
 ### Create the Menu
 https://youtu.be/l8Imtec4ReQ?t=18251
+Cambiamo la definizione del *Main* widget che diventerà un *RelativeLayout* e inseriamo lo stesso Widget nel *menu.py*. Aggiungiamo anche un po' di overlay affinché lo schermo del gioco si veda una sovrapposizione nera quando viene visualizzato il menu.
+
+```python
+# galaxy.kv
+#:import menu menu
+MainWidget:
+<MainWidget>:
+    perspective_point_x : self.width/2
+    perspective_point_y : self.height*0.75
+    MenuWidget:
+
+# main.py
+from kivy.lang.builder import Builder
+
+Builder.load_file ("menu.kv")
+class MainWidget(RelativeLayout): 
+
+# menu.py
+from kivy.uix.relativelayout import RelativeLayout
+
+class MenuWidget(RelativeLayout):
+    pass
+
+# menu.kv
+<MenuWidget>:
+    canvas.before:
+        Color:
+            rgba: 0, 0, 0, .8
+        Rectangle:
+            size: self.size
+    Label:
+        text: "Title"
+        pos_hint: {"center_x": .5, "center_y": .6}
+    Button:
+        text: "Button"
+        pos_hint: {"center_x": .5, "center_y": .4}
+        size_hint: .2, .1
+```
+La riga *Builder.load_file ("menu.kv")* serve a richiamare il file corretto per la sua visualizzazione. Altrimenti non verrà utilizzato.
+
+#### Start of the game
+https://youtu.be/l8Imtec4ReQ?t=18513
 
 ### Finalize
 
