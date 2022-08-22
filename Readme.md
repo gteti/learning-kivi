@@ -1961,6 +1961,58 @@ class MainWidget(Widget):
                 print("GAME OVER")
 ```
 
-### Display ship
+## GALAXY - v3
+https://youtu.be/l8Imtec4ReQ?t=17918
+Miglioreremo la grafica con la versione V3 dove all'avvio avremo un menu per avviare la partita e implementeremo la versione *GAME OVER* con blocco dell'esecuzione e ritorno al menu iniziale. Tutto questo insieme all'aggiunta di un punteggio ottenuto dall'utente.  
 
-### Collisions (Game over)
+### Game States(Start/game over)
+https://youtu.be/l8Imtec4ReQ?t=17980
+Aggiungiamo il **GAME OVER** al gioco. Quando la navicella andrà fuori dal percorso, allora il gioco termina e si blocca l'aggiornamento grafico. Risolviamo anche un bug che a causa delle inizializzazione e della velocità del gioco, permetteva la condizione di *Freeze* all'avvio.
+
+```python
+# main.py
+class MainWidget(Widget):
+    # ...
+
+    state_game_over = False
+
+    def update(self, dt):
+        #print("update")
+        time_factor = dt * 60
+        self.update_vertical_lines()
+        self.update_horizontal_lines()
+        self.update_tiles()
+        self.update_ship()
+
+        if not self.state_game_over:
+            speed_y = self.SPEED * self.height / 100
+            self.current_offset_y += speed_y * time_factor # self.SPEED * time_factor
+            spacing_y = self.H_LINES_SPACING * self.height
+            while self.current_offset_y >= spacing_y:
+                #self.current_offset_y = 0
+                self.current_offset_y -= spacing_y
+                self.current_y_loop += 1
+                self.generate_tiles_coordinates()
+
+            # self.current_offset_x += self.SPEED_X * time_factor
+            #self.current_offset_x += self.current_speed_x * time_factor
+            speed_x = self.current_speed_x * self.width / 100
+            self.current_offset_x += speed_x * time_factor    
+            
+        if not self.check_ship_collision() and not self.state_game_over:
+            print("GAME OVER")
+            self.state_game_over = True
+```
+
+### Create the Menu
+https://youtu.be/l8Imtec4ReQ?t=18251
+
+### Finalize
+
+#### Background
+
+#### Sounds
+
+#### Score
+
+### Ideas
