@@ -2048,6 +2048,77 @@ La riga *Builder.load_file ("menu.kv")* serve a richiamare il file corretto per 
 
 #### Start of the game
 https://youtu.be/l8Imtec4ReQ?t=18513
+Il gioco deve avviarsi solo quando viene premuto il pulsante del menu appena creato. La pressione del pulsante farà sì che il menu scompaia e riapparirà quando ci sarà una condizione di *GAME OVER*. La funzione *on_touch_down* sovrasta la pressione del pulsante per far partire il gioco. Questo perché non abbiamo, precedentemente, inserito il *return* per questa funzione richiamando lo stesso metodo per il **Super**.
+
+```python
+# main.py
+from kivy.properties import NumericProperty, Clock, ObjectProperty
+
+class MainWidget(RelativeLayout): #Widget):
+    # ...
+    state_game_has_started = False
+
+    # ...
+    def update(self, dt):
+        # ...
+        if not self.check_ship_collision() and not self.state_game_over:
+            print("GAME OVER")
+            self.state_game_over = True
+            self.menu_widget.opacity = 1
+
+    def on_menu_button_pressed(self):
+        self.state_game_has_started = True
+        self.menu_widget.opacity = 0
+
+#galaxy.kv
+<MainWidget>:
+    menu_widget: menu_widget
+    perspective_point_x : self.width/2
+    perspective_point_y : self.height*0.75
+    MenuWidget:
+        id: menu_widget
+
+# user_actions.py
+from kivy.uix.relativelayout import RelativeLayout
+# ...
+def on_touch_down(self, touch):
+    if not self.state_game_over and self.state_game_has_started: # aggiunta
+        if touch.x < self.width / 2:
+            #print("<-")
+            self.current_speed_x = self.SPEED_X
+        else:
+            #print("->")
+            self.current_speed_x = -self.SPEED_X 
+    return super(RelativeLayout, self).on_touch_down(touch) # aggiunta
+
+# menu.kv
+<MenuWidget>:
+    canvas.before:
+        Color:
+            rgba: 0, 0, 0, .8
+        Rectangle:
+            size: self.size
+    Label:
+        text: "Title"
+        pos_hint: {"center_x": .5, "center_y": .6}
+    Button:
+        text: "Button"
+        pos_hint: {"center_x": .5, "center_y": .4}
+        size_hint: .2, .1
+        on_press: root.parent.on_menu_button_pressed()
+```
+L'uso di `return super(MainWidget, self).on_touch_down(touch)` potrebbe creare dei problemi perché ogni modulo avrebbe bisogno dell'altro per funzionare, creando chiamate multiple con relativi *import*. Possiamo risolvere questo problema usando invece *RelativeLayout* che è il tipo del *MainWidget*. In caso di *Game over*, siccome usiamo l'opacità per nascondere il menu, possiamo ancora cliccare il pulsante al centro. Risolviamo questo problema inserendo una funzione di *on_touch_down* anche nel *menu.py*
+
+```python
+# menu.py
+from kivy.uix.relativelayout import RelativeLayout
+
+class MenuWidget(RelativeLayout):
+    def on_touch_down(self, touch):
+        if self.opacity == 0 : 
+            return False
+        return super(RelativeLayout, self).on_touch_down(touch)
+```
 
 ### Finalize
 
