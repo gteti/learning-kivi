@@ -2152,6 +2152,64 @@ Per poter riavviare il gioco, definiamo una funzione di reset **reset_game()**. 
 
 ### Finalize the menu
 https://youtu.be/l8Imtec4ReQ?t=19187
+Inseriamo nel menu il titolo corretto e la scritta corretta sul pulsante. Quando il gioco viene lanciato per la prima volta vogliamo far vedere **GALAXY** e **Start** per il pulsante. Quando ci sarà un *GAME OVER*, il testo sarà aggiornato e il pulsante dovrà visualizzare **Restart**. Aggiungiamo anche dello stile al menu utilizzando il materiale contenuto in *RESOURCES*. Useremo *Eurostile* per il titolo e *Sackers* per il pulsante + l'immagine per il background. 
+
+```python
+# main.py
+class MainWidget(RelativeLayout): #Widget):
+    # ...
+
+    menu_title = StringProperty("G  A   L   A   X   Y")
+    menu_button_title = StringProperty("START")
+
+    def update(self, dt):
+        # ...   
+            
+        if not self.check_ship_collision() and not self.state_game_over:
+            print("GAME OVER")
+            self.state_game_over = True
+            self.menu_title = "G  A  M  E    O  V  E  R"
+            self.menu_button_title = "RESTART"
+            self.menu_widget.opacity = 1
+
+# galaxy.kv
+#:import menu menu
+MainWidget: #per richiamare il codice di <MainWidget> oppure la funzione del main con lo stesso nome
+
+
+<MainWidget>:
+    canvas.before: 
+        Rectangle:
+            size: self.size
+            source: 'images/bg1.jpg'
+    menu_widget: menu_widget
+    perspective_point_x : self.width/2
+    perspective_point_y : self.height*0.75
+    MenuWidget:
+        id: menu_widget
+        
+# menu.kv
+<MenuWidget>:
+    canvas.before:
+        Color:
+            rgba: 0, 0, 0, .8
+        Rectangle:
+            size: self.size
+    Label:
+        font_size: dp(60)
+        font_name: 'fonts/Sackers-Gothic-Std-Light.ttf'
+        text: root.parent.menu_title
+        pos_hint: {"center_x": .5, "center_y": .6}
+    Button:
+        font_size: dp(30)
+        font_name: 'fonts/Eurostile.ttf'
+        text: root.parent.menu_button_title
+        pos_hint: {"center_x": .5, "center_y": .3}
+        size_hint: .2, .15
+        on_press: root.parent.on_menu_button_pressed()
+        background_normal: ''
+        background_color: 1, .3, .4, .85
+```
 
 #### Background
 

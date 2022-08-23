@@ -7,7 +7,7 @@ from kivy.core.window import Window
 from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.uix.relativelayout import RelativeLayout
-from kivy.properties import NumericProperty, Clock, ObjectProperty
+from kivy.properties import NumericProperty, Clock, ObjectProperty, StringProperty
 from kivy.graphics.context_instructions import Color
 from kivy.graphics.vertex_instructions import Line, Quad, Triangle
 import random
@@ -51,6 +51,9 @@ class MainWidget(RelativeLayout): #Widget):
 
     state_game_over = False
     state_game_has_started = False
+
+    menu_title = StringProperty("G  A   L   A   X   Y")
+    menu_button_title = StringProperty("START")
 
     def __init__(self, **kwargs):
         super(MainWidget, self).__init__(**kwargs)
@@ -305,6 +308,8 @@ class MainWidget(RelativeLayout): #Widget):
         if not self.check_ship_collision() and not self.state_game_over:
             print("GAME OVER")
             self.state_game_over = True
+            self.menu_title = "G  A  M  E    O  V  E  R"
+            self.menu_button_title = "RESTART"
             self.menu_widget.opacity = 1
             
     
