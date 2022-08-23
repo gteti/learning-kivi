@@ -2056,6 +2056,7 @@ from kivy.properties import NumericProperty, Clock, ObjectProperty
 
 class MainWidget(RelativeLayout): #Widget):
     # ...
+    menu_widget = ObjectProperty()
     state_game_has_started = False
 
     # ...
@@ -2120,7 +2121,37 @@ class MenuWidget(RelativeLayout):
         return super(RelativeLayout, self).on_touch_down(touch)
 ```
 
-### Finalize
+### Restart the game
+https://youtu.be/l8Imtec4ReQ?t=18988
+Per poter riavviare il gioco, definiamo una funzione di reset **reset_game()**. Nella funzione di reset dovremo azzerare tutte le variabili del gioco interessate dall'operazione e ripulire le celle.
+
+```python
+# main.py
+    def __init__(self, **kwargs):
+        # ...
+        # self.pre_fill_tiles_coordinates()
+        # self.generate_tiles_coordinates()
+        self.reset_game()
+
+    def reset_game(self):
+        self.tiles_coordinates = []
+        self.current_offset_y = 0
+        self.current_y_loop = 0
+        self.current_offset_x = 0
+        self.current_speed_x = 0
+        self.pre_fill_tiles_coordinates()
+        self.generate_tiles_coordinates()
+
+        self.state_game_over = False
+
+    def on_menu_button_pressed(self):
+        self.reset_game()
+        self.state_game_has_started = True
+        self.menu_widget.opacity = 0
+```
+
+### Finalize the menu
+https://youtu.be/l8Imtec4ReQ?t=19187
 
 #### Background
 
