@@ -2187,7 +2187,7 @@ MainWidget: #per richiamare il codice di <MainWidget> oppure la funzione del mai
     perspective_point_y : self.height*0.75
     MenuWidget:
         id: menu_widget
-        
+
 # menu.kv
 <MenuWidget>:
     canvas.before:
@@ -2211,10 +2211,116 @@ MainWidget: #per richiamare il codice di <MainWidget> oppure la funzione del mai
         background_color: 1, .3, .4, .85
 ```
 
-#### Background
+### Visualize Score of the game
+https://youtu.be/l8Imtec4ReQ?t=19585
+Dobbiamo visualizzare il punteggio della partita. Cosa intendiamo per punteggio. Il punteggio sarà il numero di celle che superiamo e sarà visualizzato in alto a sinistra. Il valore visualizzato sarà gestito da una *property* testuale e, inoltre, vogliamo visualizzare questo valore sopra il menu.
+
+```python
+# main.py
+class MainWidget(RelativeLayout): #Widget):
+    # ...
+    score_text = StringProperty()
+
+    # ...
+
+    def update(self, dt):
+        # ...
+            while self.current_offset_y >= spacing_y:
+                #self.current_offset_y = 0
+                self.current_offset_y -= spacing_y
+                self.current_y_loop += 1
+                self.score_text = "SCORE: " + str(self.current_y_loop)
+                self.generate_tiles_coordinates()
+
+    def reset_game(self):
+        # ...
+        self.score_text = "SCORE: 0"
+
+# galaxy.kv
+<MainWidget>:
+    canvas.before: 
+        Rectangle:
+            size: self.size
+            source: 'images/bg1.jpg'
+    menu_widget: menu_widget
+    perspective_point_x : self.width/2
+    perspective_point_y : self.height*0.75
+    MenuWidget:
+        id: menu_widget
+    Label:
+        text: root.score_text
+        font_size: dp(20)
+        font_name: 'fonts/Eurostile.ttf'
+        size_hint: .18, .18
+        pos_hint: {"x": 0, "top": 1}
+```
 
 #### Sounds
+https://youtu.be/l8Imtec4ReQ?t=19872
+Aggiungiamo i caricandoli dal materiale del corso. 
 
-#### Score
+```python
+# main.py
+from kivy.core.audio import SoundLoader
+
+class MainWidget(RelativeLayout): #Widget):
+    # ...
+
+    sound_begin = None
+    sound_galaxy = None
+    sound_gameover_impact = None
+    sound_gameover_voice = None
+    sound_music1 = None
+    sound_restart = None
+
+    def __init__(self, **kwargs):
+        # ...
+        self.sound_galaxy.play()
+
+    def init_audio(self):
+        self.sound_begin = SoundLoader.load("audio/begin.wav")
+        self.sound_galaxy = SoundLoader.load("audio/galaxy.wav")
+        self.sound_gameover_impact = SoundLoader.load("audio/gameover_impact.wav")
+        self.sound_gameover_voice = SoundLoader.load("audio/gameover_voice.wav")
+        self.sound_music1 = SoundLoader.load("audio/music1.wav")
+        self.sound_restart = SoundLoader.load("audio/restart.wav")
+
+        self.sound_music1.volume = 1
+        self.sound_begin.volume = .25
+        self.sound_galaxy.volume = .25
+        self.sound_gameover_impact.volume = .6
+        self.sound_gameover_voice.volume = .25
+        
+        self.sound_restart.volume = .25
+
+    def update(self, dt):
+        # ...           
+            
+        if not self.check_ship_collision() and not self.state_game_over:
+            print("GAME OVER")
+            self.state_game_over = True
+            self.menu_title = "G  A  M  E    O  V  E  R"
+            self.menu_button_title = "RESTART"
+            self.menu_widget.opacity = 1
+            self.sound_music1.stop()
+            self.sound_gameover_impact.play()
+            Clock.schedule_once(self.play_game_over_voice_sound, 3)
+
+    def play_game_over_voice_sound(self):
+        if self.state_game_over:
+            self.sound_gameover_voice.play()       
+    
+    def on_menu_button_pressed(self):
+        if self.state_game_over:
+            self.sound_restart.play()
+        else:
+            self.sound_begin.play()
+        self.sound_music1.play()
+        self.reset_game()
+        self.state_game_has_started = True
+        self.menu_widget.opacity = 0
+
+```
 
 ### Ideas
+Check video at https://youtu.be/l8Imtec4ReQ?t=20422
